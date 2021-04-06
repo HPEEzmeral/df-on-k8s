@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nodeservice
+  namespace: hpe-nodesvc
+spec:
+  selector:
+    matchLabels:
+      app: nodeservice
+  template:
+    metadata:
+      labels:
+        app: nodeservice
+    spec:
+      hostIPC: true
+      hostNetwork: true
+      hostPID: true
+      automountServiceAccountToken: true
+      serviceAccountName: hpe-nodesvc
+      imagePullSecrets:
+        - name: hpe-imagepull-secrets
+      containers:
+      - name: nodeservice
+        image: {operator-repo}/nodeservices-6.2.0:202104010902C
+        securityContext:
+          privileged: true
+        imagePullPolicy: Always
+        command:
+        - /bin/bash
+        - -c
+        - /opt/mapr/kubernetes/start.sh
+        volumeMounts:
+          - mountPath: /opt/mapr/logs
+            name: nodeservices-logs
+        env:
+          - name: FAKE_LABEL_NODES
+            value: "{fake-labels}"
+          - name: NUKE_LABELS
+            value: "false"
+          - name: PRESERVE_CONTAINER
+            value: "false"
+          - name: LOG_LEVEL
+            value: "info"
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          - name: POD_SERVICE_ACCOUNT
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.serviceAccountName
+      volumes:
+        - hostPath:
+            path: /var/log/nodevalidator
+            type: DirectoryOrCreate
+          name: nodeservices-logs

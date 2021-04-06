@@ -1,0 +1,2396 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: dataplatforms.hcp.hpe.com
+spec:
+  group: hcp.hpe.com
+  names:
+    kind: DataPlatform
+    listKind: DataPlatformList
+    plural: dataplatforms
+    singular: dataplatform
+  scope: Cluster
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: DataPlatform is the Schema for the DataPlatform API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: DataPlatformSpec defines the desired state of DataPlatform
+          properties:
+            baseimagetag:
+              description: BaseImageTag. This tag (along with service name) will be
+                used to identify what images to pull unless overridden in a specific
+                package in Cluster service info
+              maxLength: 128
+              type: string
+            clustercustomizationfiles:
+              description: Cluster Customization Files. Set of template files used
+                to customize Cluster pods
+              properties:
+                admincliconfig:
+                  description: AdminCLI ConfigMap. The name of a configmap template
+                    containing AdminCLI config files in hpe-templates-data. The default
+                    template provided is admincli-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                cldbconfig:
+                  description: CLDB ConfigMap. The name of a configmap template containing
+                    CLDB config files in hpe-templates-data. The default template
+                    provided is cldb-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                collectdconfig:
+                  description: Collectd ConfigMap. The name of a configmap template
+                    containing Collectd config files in hpe-templates-data. The default
+                    template provided is collectd-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                dagconfig:
+                  description: Data Access Gateway ConfigMap. The name of a configmap
+                    template containing Data Access Gateway config files in hpe-templates-data.
+                    The default template provided is maprgateway-cm. You can replace
+                    with your own
+                  maxLength: 253
+                  type: string
+                esconfig:
+                  description: Elastic Search ConfigMap. The name of a configmap template
+                    containing Elastic Search config files in hpe-templates-data.
+                    The default template provided is elasticsearch-cm. You can replace
+                    with your own
+                  maxLength: 253
+                  type: string
+                fluentconfig:
+                  description: Fluent ConfigMap. The name of a configmap template
+                    containing Fluent config files in hpe-templates-data. The default
+                    template provided is fluent-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                grafanaconfig:
+                  description: Grafana ConfigMap. The name of a configmap template
+                    containing Grafana config files in hpe-templates-data. The default
+                    template provided is grafana-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                hivemetaconfig:
+                  description: Hive Metastore ConfigMap. The name of a configmap template
+                    containing Hive Metastore config files in hpe-templates-data.
+                    The default template provided is hivemetastore-cm. You can replace
+                    with your own
+                  maxLength: 253
+                  type: string
+                httpfsconfig:
+                  description: Httpfs ConfigMap. The name of a configmap template
+                    containing Httpfs config files in hpe-templates-data. The default
+                    template provided is maprgateway-cm. You can replace with your
+                    own
+                  maxLength: 253
+                  type: string
+                kafkarestconfig:
+                  description: KafkaRest ConfigMap. The name of a configmap template
+                    containing KafkaRest config files in hpe-templates-data. The default
+                    template provided is maprgateway-cm. You can replace with your
+                    own
+                  maxLength: 253
+                  type: string
+                kibanaconfig:
+                  description: Kibana ConfigMap. The name of a configmap template
+                    containing Kibana config files in hpe-templates-data. The default
+                    template provided is kibana-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                ldapcertsecret:
+                  description: LDAP Cert Secret. The name of an LDAP secret template
+                    in hpe-secure. The default template provided is ldapcert-secret.
+                    You can replace with your own
+                  maxLength: 253
+                  type: string
+                ldapconfig:
+                  description: LDAP Client ConfigMap. The name of a configmap template
+                    containing LDAPClient config files in hpe-templates-data. The
+                    default template provided is ldapclient-cm. You can replace with
+                    your own
+                  maxLength: 253
+                  type: string
+                maprgatewayconfig:
+                  description: MapR Gateway ConfigMap. The name of a configmap template
+                    containing MapR Gateway config files in hpe-templates-data. The
+                    default template provided is maprgateway-cm. You can replace with
+                    your own
+                  maxLength: 253
+                  type: string
+                mfsconfig:
+                  description: MFS ConfigMap. The name of a configmap template containing
+                    MFS config files in hpe-templates-data. The default template provided
+                    is mfs-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                networkpolicy:
+                  description: Network Policy. The name of a Network Policy template
+                    in hpe-secure. The default template provided is cluster-np. You
+                    can replace with your own
+                  maxLength: 253
+                  type: string
+                nfsconfig:
+                  description: NFS ConfigMap. The name of a configmap template containing
+                    NFS config files in hpe-templates-data. The default template provided
+                    is nfsserver-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                objectstoreconfig:
+                  description: Objectstore ConfigMap. The name of a configmap template
+                    containing Objectstore config files in hpe-templates-data. The
+                    default template provided is objectstore-cm. You can replace with
+                    your own
+                  maxLength: 253
+                  type: string
+                opentsdbconfig:
+                  description: OpenTSDB ConfigMap. The name of a configmap template
+                    containing OpenTSDB config files in hpe-templates-data. The default
+                    template provided is opentsdb-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                podsecuritypolicy:
+                  description: Pod Security Policy. The name of a Pod Security Policy
+                    template in hpe-secure. The default template provided is cluster-psp.
+                    You can replace with your own
+                  maxLength: 253
+                  type: string
+                role:
+                  description: Role. The name of a Role template in hpe-secure. The
+                    default template provided is cluster-role. You can replace with
+                    your own
+                  maxLength: 253
+                  type: string
+                sshsecret:
+                  description: SSH Secret. The name of an SSH secret template in hpe-secure.
+                    The default template provided is ssh-secret. You can replace with
+                    your own
+                  maxLength: 253
+                  type: string
+                sslsecret:
+                  description: SSL Secret. The name of an SSL secret template in hpe-secure.
+                    The default template provided is ssl-secret. You can replace with
+                    your own
+                  maxLength: 253
+                  type: string
+                sssdsecret:
+                  description: SSSD Secret. The name of an SSSD secret template in
+                    hpe-secure. The default template provided is sssd-secret. You
+                    can replace with your own
+                  maxLength: 253
+                  type: string
+                userrole:
+                  description: User Role. The name of a User Role template in hpe-secure.
+                    The default template provided is cluster-user-role. You can replace
+                    with your own
+                  maxLength: 253
+                  type: string
+                webconfig:
+                  description: Webserver ConfigMap. The name of a configmap template
+                    containing Webserver config files in hpe-templates-data. The default
+                    template provided is webserver-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+                zkconfig:
+                  description: Zookeeper ConfigMap. The name of a configmap template
+                    containing Zookeeper config files in hpe-templates-data. The default
+                    template provided is zookeeper-cm. You can replace with your own
+                  maxLength: 253
+                  type: string
+              type: object
+            core:
+              description: Core. Core containers in the DataPlatform cluster
+              properties:
+                admincli:
+                  description: AdminCLI. Settings for starting these pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      maximum: 1
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 256M
+                      pattern: ^(([2][5][6-9]|[2][6-9][0-9]|[3-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 256M
+                      pattern: ^(([2][5][6-9]|[2][6-9][0-9]|[3-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                cldb:
+                  description: CLDB. Settings for starting these pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      minimum: 0
+                      type: integer
+                    diskinfo:
+                      description: Disk Info. Info about the host node's disks used
+                        for CLDB's pods. Defaults to simple disks when not provided.
+                      properties:
+                        diskcount:
+                          description: Disk Count. The number of disks to use in this
+                            MFS group. Default if not provided is 1
+                          minimum: 1
+                          type: integer
+                        disktype:
+                          description: Disk Type. The type of disks in this MFS Group.
+                            Valid values are HDD, SSD, and NVME. If group is mixed,
+                            use HDD. Default is HDD
+                          enum:
+                          - HDD
+                          - SSD
+                          - NVME
+                          type: string
+                        storagepoolsize:
+                          description: DataPlatform Pool Size. The number of disks
+                            in a storage pool for this MFS Group. Default if not provided
+                            will be unlimited
+                          minimum: 0
+                          type: integer
+                        storagepoolsperinstance:
+                          description: Storage Pools per MFS Instance. The number
+                            of instances to launch based on number of storage pools
+                            for this MFS Group. Default if not provided will be 1
+                            or 2 depending on disk type
+                          maximum: 32
+                          minimum: 0
+                          type: integer
+                      type: object
+                    failurecount:
+                      description: Failure Count. The number of failures of CLDB that
+                        should be started at Cluster creation. Default if not provided
+                        is 1
+                      maximum: 7
+                      minimum: 0
+                      type: integer
+                    hostports:
+                      description: Host Ports. List of ports to use for CLDB for external
+                        access on Kubernetes node. Defaults to pod values if missing.
+                      items:
+                        description: Info about host ports
+                        properties:
+                          hostport:
+                            description: Host Port. The host port number used on the
+                              Kubernetes host. Will use default for pod if empty
+                            maximum: 65535
+                            minimum: 1
+                            type: integer
+                        type: object
+                      type: array
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    jmxnatport:
+                      description: External CLDB JMX NAT Port. UNSUPPORTED. The port
+                        on the NAT server that forwards to this service. Default if
+                        not provided is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 24G
+                      pattern: ^([2][4-9]|[3-9][0-9]|\d{3,})([G][i])$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 24G
+                      pattern: ^([1][6-9]|[2-9][0-9]|\d{3,})([G][i])$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                externaladdresses:
+                  description: Node to IP address mappings. List hosts to ips used
+                    to set the MAPR_EXTERNAL in pods.  Default if omitted is to use
+                    the output of kubectl get nodes -o wide
+                  items:
+                    properties:
+                      iplist:
+                        maxLength: 253
+                        type: string
+                      node:
+                        description: Node Mapping. The node  and comma delimited ip
+                          address list to use if you want to override the default
+                          The default is dervied from the internal and external IPs
+                          found in a kubectl get nodes -o wide
+                        maxLength: 253
+                        type: string
+                    type: object
+                  type: array
+                externaldomain:
+                  description: External Domain. The external domain of the host or
+                    NAT addresses used to connect externally. Default is empty.
+                  type: string
+                init:
+                  description: Init job. Settings for starting this job in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. CURRENTLY UNSUPPORTED. The maximum cpu
+                        that the pod will be allowed to consume in a time slice before
+                        it is left unscheduled until the next slice. Default if not
+                        provided is 1000m or 1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. CURRENTLY UNSUPPORTED. The
+                        maximum amount of OS diskspace that the pod will be allowed
+                        to consume for logs, coredumps, and container images before
+                        pod is not allowed to write more data. Default if not provided
+                        is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. CURRENTLY UNSUPPORTED. The maximum
+                        amount of RAM that the pod will be allowed to consume before
+                        it is automatically OOMKilled. Default if not provided is
+                        8Gi
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    sshport:
+                      description: External SSH Port. CURRENTLY UNSUPPORTED. The port
+                        on the host node used to handle external ssh requests. Setting
+                        this port will limit scalability. Default if not provided
+                        is to use no external SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                mfs:
+                  description: MFS. Settings for starting these pods in Cluster.
+                  properties:
+                    groups:
+                      description: Group List. A list of MFS Groups to deploy with
+                        this CR.
+                      items:
+                        description: Info about an MFS Group
+                        properties:
+                          count:
+                            description: Pod Count. The number of instances of the
+                              MFS pod that should be started at Cluster creation.
+                              Default if not provided is 0
+                            minimum: 1
+                            type: integer
+                          diskinfo:
+                            description: Disk Info. Info about the host node's disks
+                              used for CLDB's pods. Defaults to simple disks when
+                              not provided.
+                            properties:
+                              diskcount:
+                                description: Disk Count. The number of disks to use
+                                  in this MFS group. Default if not provided is 1
+                                minimum: 1
+                                type: integer
+                              disktype:
+                                description: Disk Type. The type of disks in this
+                                  MFS Group. Valid values are HDD, SSD, and NVME.
+                                  If group is mixed, use HDD. Default is HDD
+                                enum:
+                                - HDD
+                                - SSD
+                                - NVME
+                                type: string
+                              storagepoolsize:
+                                description: DataPlatform Pool Size. The number of
+                                  disks in a storage pool for this MFS Group. Default
+                                  if not provided will be unlimited
+                                minimum: 0
+                                type: integer
+                              storagepoolsperinstance:
+                                description: Storage Pools per MFS Instance. The number
+                                  of instances to launch based on number of storage
+                                  pools for this MFS Group. Default if not provided
+                                  will be 1 or 2 depending on disk type
+                                maximum: 32
+                                minimum: 0
+                                type: integer
+                            type: object
+                          hostports:
+                            description: Host Ports. List of ports to use for MFS
+                              for external access on Kubernetes node. Defaults to
+                              pod values if missing.
+                            items:
+                              description: Info about host ports
+                              properties:
+                                hostport:
+                                  description: Host Port. The host port number used
+                                    on the Kubernetes host. Will use default for pod
+                                    if empty
+                                  maximum: 65535
+                                  minimum: 1
+                                  type: integer
+                              type: object
+                            type: array
+                          image:
+                            description: Image Name. The full name of the image used
+                              for the pod's container. This overrides the base image
+                              tag. Default is to use the base image tag.
+                            maxLength: 128
+                            type: string
+                          limitcpu:
+                            description: CPU Limit. The maximum cpu that the pod will
+                              be allowed to consume in a time slice before it is left
+                              unscheduled until the next slice. Default if not provided
+                              is 1000m or 1 CPU
+                            pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                            type: string
+                          limitdisk:
+                            description: Ephemeral Disk Limit. The maximum amount
+                              of OS diskspace that the pod will be allowed to consume
+                              for logs, coredumps, and container images before pod
+                              is not allowed to write more data. Default if not provided
+                              is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                            type: string
+                          limitmemory:
+                            description: Memory Limit. The maximum amount of RAM that
+                              the pod will be allowed to consume before it is automatically
+                              OOMKilled. Default if not provided is 8Gi, min is 24G
+                            pattern: ^([2][4-9]|[3-9][0-9]|\d{3,})([G][i])$
+                            type: string
+                          loglevel:
+                            description: Log Level. Log Level for this Pod. Overrides
+                              Cluster level setting. Default if not provided is to
+                              use Cluster settings.
+                            enum:
+                            - ERROR
+                            - WARN
+                            - INFO
+                            - DEBUG
+                            type: string
+                          name:
+                            description: Group Name. The name of this MFS Group.
+                            maxLength: 20
+                            type: string
+                          requestcpu:
+                            description: CPU Requested. The amount of cpu that will
+                              be reserved on a node for the pod in milli CPU units.
+                              Default if not provided is 500m or .5 CPU
+                            pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                            type: string
+                          requestdisk:
+                            description: Ephemeral Disk Requested. The amount of OS
+                              diskspace that will be reserved on a node for the pod
+                              for logs, coredumps, and container images. Default if
+                              not provided is 20GB
+                            pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                            type: string
+                          requestmemory:
+                            description: Memory Requested. The amount of RAM that
+                              will be reserved on the node for the pod. Default if
+                              not provided is 2Gi, min is 24G
+                            pattern: ^([1][6-9]|[2-9][0-9]|\d{3,})([G][i])$
+                            type: string
+                          sshport:
+                            description: External SSH Port. The port on the host node
+                              used to handle external ssh requests. Setting this port
+                              will limit scalability. Default if not provided is to
+                              use no external SSH Port
+                            maximum: 65535
+                            minimum: 1
+                            type: integer
+                        required:
+                        - count
+                        - name
+                        type: object
+                      type: array
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                webserver:
+                  description: Webserver. Settings for starting these pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      maximum: 1
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 2G
+                      pattern: ^([2-9]|\d{2,})([G][i])$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 2G
+                      pattern: ^([2-9]|\d{2,})([G][i])$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                zookeeper:
+                  description: Zookeeper. Settings for starting these pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      minimum: 0
+                      type: integer
+                    externaladdresses:
+                      description: External Addresses. The external ips of the hosts
+                        or NAT used to connect externally. Default is to use generated
+                        addresses.
+                      type: string
+                    externaldomain:
+                      description: External Domain. The external domain of the host
+                        or NAT addresses used to connect externally. Default is empty.
+                      type: string
+                    failurecount:
+                      description: Failure Count. The number of failures of zookeepers
+                        that should be started at Cluster creation. Default if not
+                        provided is 1
+                      maximum: 4
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 128Mb
+                      pattern: ^(([1][2][8-9]|[1][3-9][0-9]|[2-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 128Mb
+                      pattern: ^(([1][2][8-9]|[1][3-9][0-9]|[2-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+              type: object
+            corelocation:
+              description: Core Location. Root of directory to write core files on
+                host node. This directory must be writeable. Default if empty is /var/mapr/cores/.
+                This Cluster will create a subdirectory for itself under this root
+              maxLength: 3800
+              type: string
+            coreservices:
+              description: Core Services. CoreService container for Hive Metastore
+                in the DataPlatform cluster
+              properties:
+                hivemetastore:
+                  description: Hive Metastore Cluster Service. Settings for starting
+                    metastore pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      maximum: 1
+                      minimum: 0
+                      type: integer
+                    externaldbserver:
+                      description: External DB Server. Location of the external DB
+                        Server
+                      type: string
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 512M
+                      pattern: ^(([5][1][2-9]|[5][2-9][0-9]|[6-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 512M
+                      pattern: ^(([5][1][2-9]|[5][2-9][0-9]|[6-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    useexternaldb:
+                      description: Use External DB. Use external database for hive
+                        metastore. Default is false
+                      type: boolean
+                  type: object
+              type: object
+            debuginfo:
+              description: Debug Info. Settings pertaining to debugging in the DataPlatform
+                cluster
+              properties:
+                loglevel:
+                  description: 'Log Level - Change logging level of all Cluster service
+                    containers. Choices are ERROR, INFO, and DEBUG. Note: DEBUG will
+                    generate much additional log churn. Default if not provided is
+                    INFO'
+                  enum:
+                  - ERROR
+                  - INFO
+                  - DEBUG
+                  type: string
+                preservefailedpods:
+                  description: Preserve Failed Pods. Try to avoid kubernetes restarting
+                    of failing pods. This behavior is not guaranteed for all errors.
+                    This setting is useful during debugging but should be false in
+                    other circumstances to enhance availability. Default is false
+                    or not to preserve pods
+                  type: boolean
+                version:
+                  description: Version. INTERNAL USE ONLY. Please leave empty.
+                  maxLength: 50
+                  type: string
+                wipelogs:
+                  description: Wipe Logs. Remove logs at startup for container. This
+                    can assist avoiding old logs. This flag will be ignored if hostid
+                    file is present already on host Default is false or not to wipe
+                    logs
+                  type: boolean
+              type: object
+            disableha:
+              description: Disable HA. Disable HA features for development grade cluster.
+                Default value is false
+              type: boolean
+            disasterScheduling:
+              description: Disaster Scheduling. Schedule MFS & CLDB pods exclusively
+                based on node labels
+              type: boolean
+            dnsdomain:
+              description: DNS Domain. Domain name for kubernetes pods. Default value
+                is cluster.local
+              maxLength: 253
+              type: string
+            environmenttype:
+              description: 'Environment Type. The Type of Kubernetes environment that
+                this Cluster will run in. Legal values are currently: hcp, gke, eks,
+                azure and vanilla. Default is hcp'
+              enum:
+              - hcp
+              - gke
+              - vanilla
+              type: string
+            gateways:
+              description: Gateways. Gateway containers for replication, erasure coding,
+                kafka, db, s3, nfs in the DataPlatform cluster
+              properties:
+                dag:
+                  description: Data Access Gateway. Settings for starting these gateway
+                    pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. CURRENTLY UNSUPPORTED. The number of
+                        instances of this pod that should be started at Cluster creation.
+                        Default if not provided is 0
+                      minimum: 0
+                      type: integer
+                    hostports:
+                      description: Host Ports. CURRENTLY UNSUPPORTED. List of ports
+                        to use for CLDB for external access on Kubernetes node. Defaults
+                        to pod values if missing.
+                      items:
+                        description: Info about host ports
+                        properties:
+                          hostport:
+                            description: Host Port. The host port number used on the
+                              Kubernetes host. Will use default for pod if empty
+                            maximum: 65535
+                            minimum: 1
+                            type: integer
+                        type: object
+                      type: array
+                    image:
+                      description: Image Name. CURRENTLY UNSUPPORTED. The full name
+                        of the image used for the pod's container. This overrides
+                        the base image tag. Default is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. CURRENTLY UNSUPPORTED. The maximum cpu
+                        that the pod will be allowed to consume in a time slice before
+                        it is left unscheduled until the next slice. Default if not
+                        provided is 1000m or 1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. CURRENTLY UNSUPPORTED. The
+                        maximum amount of OS diskspace that the pod will be allowed
+                        to consume for logs, coredumps, and container images before
+                        pod is not allowed to write more data. Default if not provided
+                        is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. CURRENTLY UNSUPPORTED. The maximum
+                        amount of RAM that the pod will be allowed to consume before
+                        it is automatically OOMKilled. Default if not provided is
+                        8Gi
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    loglevel:
+                      description: Log Level. CURRENTLY UNSUPPORTED. Log Level for
+                        this Pod. Overrides Cluster level setting. Default if not
+                        provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. CURRENTLY UNSUPPORTED. The amount
+                        of cpu that will be reserved on a node for the pod in milli
+                        CPU units. Default if not provided is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. CURRENTLY UNSUPPORTED.
+                        The amount of OS diskspace that will be reserved on a node
+                        for the pod for logs, coredumps, and container images. Default
+                        if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. CURRENTLY UNSUPPORTED. The amount
+                        of RAM that will be reserved on the node for the pod. Default
+                        if not provided is 2Gi
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    sshport:
+                      description: External SSH Port. CURRENTLY UNSUPPORTED. The port
+                        on the host node used to handle external ssh requests. Setting
+                        this port will limit scalability. Default if not provided
+                        is to use no external SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                httpfs:
+                  description: HTTPfs Gateway. Settings for starting these gateway
+                    pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      minimum: 0
+                      type: integer
+                    hostports:
+                      description: Host Ports. List of ports to use for CLDB for external
+                        access on Kubernetes node. Defaults to pod values if missing.
+                      items:
+                        description: Info about host ports
+                        properties:
+                          hostport:
+                            description: Host Port. The host port number used on the
+                              Kubernetes host. Will use default for pod if empty
+                            maximum: 65535
+                            minimum: 1
+                            type: integer
+                        type: object
+                      type: array
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 256M
+                      pattern: ^(([2][5][6-9]|[2][6-9][0-9]|[3-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 256M
+                      pattern: ^(([2][5][6-9]|[2][6-9][0-9]|[3-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                kafkarest:
+                  description: KafkaRest Gateway. Settings for starting these gateway
+                    pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. CURRENTLY UNSUPPORTED. The number of
+                        instances of this pod that should be started at Cluster creation.
+                        Default if not provided is 0
+                      minimum: 0
+                      type: integer
+                    hostports:
+                      description: Host Ports. CURRENTLY UNSUPPORTED. List of ports
+                        to use for CLDB for external access on Kubernetes node. Defaults
+                        to pod values if missing.
+                      items:
+                        description: Info about host ports
+                        properties:
+                          hostport:
+                            description: Host Port. The host port number used on the
+                              Kubernetes host. Will use default for pod if empty
+                            maximum: 65535
+                            minimum: 1
+                            type: integer
+                        type: object
+                      type: array
+                    image:
+                      description: Image Name. CURRENTLY UNSUPPORTED. The full name
+                        of the image used for the pod's container. This overrides
+                        the base image tag. Default is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. CURRENTLY UNSUPPORTED. The maximum cpu
+                        that the pod will be allowed to consume in a time slice before
+                        it is left unscheduled until the next slice. Default if not
+                        provided is 1000m or 1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. CURRENTLY UNSUPPORTED. The
+                        maximum amount of OS diskspace that the pod will be allowed
+                        to consume for logs, coredumps, and container images before
+                        pod is not allowed to write more data. Default if not provided
+                        is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. CURRENTLY UNSUPPORTED. The maximum
+                        amount of RAM that the pod will be allowed to consume before
+                        it is automatically OOMKilled. Default if not provided is
+                        8Gi
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    loglevel:
+                      description: Log Level. CURRENTLY UNSUPPORTED. Log Level for
+                        this Pod. Overrides Cluster level setting. Default if not
+                        provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. CURRENTLY UNSUPPORTED. The amount
+                        of cpu that will be reserved on a node for the pod in milli
+                        CPU units. Default if not provided is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. CURRENTLY UNSUPPORTED.
+                        The amount of OS diskspace that will be reserved on a node
+                        for the pod for logs, coredumps, and container images. Default
+                        if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. CURRENTLY UNSUPPORTED. The amount
+                        of RAM that will be reserved on the node for the pod. Default
+                        if not provided is 2Gi
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    sshport:
+                      description: External SSH Port. CURRENTLY UNSUPPORTED. The port
+                        on the host node used to handle external ssh requests. Setting
+                        this port will limit scalability. Default if not provided
+                        is to use no external SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                maprgateway:
+                  description: MapR Gateway. Settings for starting these gateway pods
+                    in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. CURRENTLY UNSUPPORTED. The number of
+                        instances of this pod that should be started at Cluster creation.
+                        Default if not provided is 0
+                      minimum: 0
+                      type: integer
+                    hostports:
+                      description: Host Ports. CURRENTLY UNSUPPORTED. List of ports
+                        to use for CLDB for external access on Kubernetes node. Defaults
+                        to pod values if missing.
+                      items:
+                        description: Info about host ports
+                        properties:
+                          hostport:
+                            description: Host Port. The host port number used on the
+                              Kubernetes host. Will use default for pod if empty
+                            maximum: 65535
+                            minimum: 1
+                            type: integer
+                        type: object
+                      type: array
+                    image:
+                      description: Image Name. CURRENTLY UNSUPPORTED. The full name
+                        of the image used for the pod's container. This overrides
+                        the base image tag. Default is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. CURRENTLY UNSUPPORTED. The maximum cpu
+                        that the pod will be allowed to consume in a time slice before
+                        it is left unscheduled until the next slice. Default if not
+                        provided is 1000m or 1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. CURRENTLY UNSUPPORTED. The
+                        maximum amount of OS diskspace that the pod will be allowed
+                        to consume for logs, coredumps, and container images before
+                        pod is not allowed to write more data. Default if not provided
+                        is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. CURRENTLY UNSUPPORTED. The maximum
+                        amount of RAM that the pod will be allowed to consume before
+                        it is automatically OOMKilled. Default if not provided is
+                        8Gi
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    loglevel:
+                      description: Log Level. CURRENTLY UNSUPPORTED. Log Level for
+                        this Pod. Overrides Cluster level setting. Default if not
+                        provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. CURRENTLY UNSUPPORTED. The amount
+                        of cpu that will be reserved on a node for the pod in milli
+                        CPU units. Default if not provided is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. CURRENTLY UNSUPPORTED.
+                        The amount of OS diskspace that will be reserved on a node
+                        for the pod for logs, coredumps, and container images. Default
+                        if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. CURRENTLY UNSUPPORTED. The amount
+                        of RAM that will be reserved on the node for the pod. Default
+                        if not provided is 2Gi
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    sshport:
+                      description: External SSH Port. CURRENTLY UNSUPPORTED. The port
+                        on the host node used to handle external ssh requests. Setting
+                        this port will limit scalability. Default if not provided
+                        is to use no external SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                mast:
+                  description: MAST Gateway. CURRENTLY UNSUPPORTED. Whether to start
+                    the MAST Gateway in MFS/CLDB containers.
+                  type: boolean
+                mastnatport:
+                  description: External MAST NAT Port. UNSUPPORTED. The port on the
+                    NAT server that forwards to this service. Default if not provided
+                    is to use no NAT port
+                  maximum: 65535
+                  minimum: 1
+                  type: integer
+                nfs:
+                  description: NFS Gateway.  Whether to start the NFS Server in MFS
+                    only containers.
+                  type: boolean
+                nfsnatport:
+                  description: External NFS NAT Port. UNSUPPORTED The port on the
+                    NAT server that forwards to this service. Default if not provided
+                    is to use no NAT port
+                  maximum: 65535
+                  minimum: 1
+                  type: integer
+                objectstore:
+                  description: Objectstore S3 Gateway. Settings for starting these
+                    gateway pods in Cluster.
+                  properties:
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    zones:
+                      description: Group List. A list of Objectstore Zones to deploy
+                        with this CR.
+                      items:
+                        description: Info about an Objectstore Zone
+                        properties:
+                          count:
+                            description: Pod Count. The number of instances of this
+                              pod that should be started at Cluster creation. Default
+                              if not provided is 0
+                            minimum: 0
+                            type: integer
+                          fspath:
+                            description: Volume Path. Path in the volume to bucket
+                            type: string
+                          hostports:
+                            description: Host Ports. List of ports to use for CLDB
+                              for external access on Kubernetes node. Defaults to
+                              pod values if missing.
+                            items:
+                              description: Info about host ports
+                              properties:
+                                hostport:
+                                  description: Host Port. The host port number used
+                                    on the Kubernetes host. Will use default for pod
+                                    if empty
+                                  maximum: 65535
+                                  minimum: 1
+                                  type: integer
+                              type: object
+                            type: array
+                          image:
+                            description: Image Name. The full name of the image used
+                              for the pod's container. This overrides the base image
+                              tag. Default is to use the base image tag.
+                            maxLength: 128
+                            type: string
+                          limitcpu:
+                            description: CPU Limit. The maximum cpu that the pod will
+                              be allowed to consume in a time slice before it is left
+                              unscheduled until the next slice. Default if not provided
+                              is 1000m or 1 CPU
+                            pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                            type: string
+                          limitdisk:
+                            description: Ephemeral Disk Limit. The maximum amount
+                              of OS diskspace that the pod will be allowed to consume
+                              for logs, coredumps, and container images before pod
+                              is not allowed to write more data. Default if not provided
+                              is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                            type: string
+                          limitmemory:
+                            description: Memory Limit. The maximum amount of RAM that
+                              the pod will be allowed to consume before it is automatically
+                              OOMKilled. Default if not provided is 8Gi
+                            pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                            type: string
+                          loglevel:
+                            description: Log Level. Log Level for this Pod. Overrides
+                              Cluster level setting. Default if not provided is to
+                              use Cluster settings.
+                            enum:
+                            - ERROR
+                            - WARN
+                            - INFO
+                            - DEBUG
+                            type: string
+                          name:
+                            description: Zone Name. The name of this Objectstore Zone.
+                            maxLength: 20
+                            type: string
+                          requestcpu:
+                            description: CPU Requested. The amount of cpu that will
+                              be reserved on a node for the pod in milli CPU units.
+                              Default if not provided is 500m or .5 CPU
+                            pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                            type: string
+                          requestdisk:
+                            description: Ephemeral Disk Requested. The amount of OS
+                              diskspace that will be reserved on a node for the pod
+                              for logs, coredumps, and container images. Default if
+                              not provided is 20GB
+                            pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                            type: string
+                          requestmemory:
+                            description: Memory Requested. The amount of RAM that
+                              will be reserved on the node for the pod. Default if
+                              not provided is 2Gi
+                            pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                            type: string
+                          secretname:
+                            description: Secret Name. Name of secret to use in CSI
+                              volume creation
+                            type: string
+                          size:
+                            description: Size. Size of Object Store / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                            type: string
+                          sshport:
+                            description: External SSH Port. The port on the host node
+                              used to handle external ssh requests. Setting this port
+                              will limit scalability. Default if not provided is to
+                              use no external SSH Port
+                            maximum: 65535
+                            minimum: 1
+                            type: integer
+                        required:
+                        - name
+                        type: object
+                      type: array
+                  type: object
+              type: object
+            imagepullsecret:
+              description: Image Pull Secret. Name of secret located in mapr-system
+                used to pull images from registry. It should contain login info for
+                the registry. This should ALWAYS be provided in unless pulling images
+                from an open registry. The default secret is named mapr-imagepull-secrets
+              maxLength: 253
+              type: string
+            imageregistry:
+              description: Image Registry. Location to pull images. This should ALWAYS
+                be provided
+              maxLength: 255
+              type: string
+            loglocation:
+              description: Log Location. Root of logging directory on host node. This
+                directory must be writeable. Default if empty is /var/log/mapr/. This
+                Cluster will create a subdirectory for itself under this root
+              maxLength: 3800
+              type: string
+            monitoring:
+              description: Monitoring. Spyglass containers for Metrics and Logging
+                in the the DataPlatform cluster
+              properties:
+                collectd:
+                  description: Collectd. Settings for starting these pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 256M
+                      pattern: ^(([2][5][6-9]|[2][6-9][0-9]|[3-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 256M
+                      pattern: ^(([2][5][6-9]|[2][6-9][0-9]|[3-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                elasticsearch:
+                  description: Elastic Search. Settings for starting these pods in
+                    Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 4G
+                      pattern: ^([4-9]|\d{2,})([G][i])$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 4G
+                      pattern: ^([4-9]|\d{2,})([G][i])$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                fluent:
+                  description: FluentBit. Settings for starting these pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 256M
+                      pattern: ^(([2][5][6-9]|[2][6-9][0-9]|[3-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 256M
+                      pattern: ^(([2][5][6-9]|[2][6-9][0-9]|[3-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                grafana:
+                  description: Grafana.  Settings for starting these pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      maximum: 1
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 128M
+                      pattern: ^(([1][2][8-9]|[1][3-9][0-9]|[2-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 128M
+                      pattern: ^(([1][2][8-9]|[1][3-9][0-9]|[2-9][0-9][0-9]|\d{4,})([M][i])|(?:[1-9]|\d*)([G][i]))$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                kibana:
+                  description: Kibana. Settings for starting these pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      maximum: 1
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 2G
+                      pattern: ^([2-9]|\d{2,})([G][i])$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 2G
+                      pattern: ^([2-9]|\d{2,})([G][i])$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+                monitorlogs:
+                  description: Determines if logging components should be installed
+                  type: boolean
+                monitormetrics:
+                  description: Determines if metrics components should be installed
+                  type: boolean
+                opentsdb:
+                  description: OpenTSDB. Settings for starting these pods in Cluster.
+                  properties:
+                    count:
+                      description: Pod Count. The number of instances of this pod
+                        that should be started at Cluster creation. Default if not
+                        provided is 0
+                      minimum: 0
+                      type: integer
+                    image:
+                      description: Image Name. The full name of the image used for
+                        the pod's container. This overrides the base image tag. Default
+                        is to use the base image tag.
+                      maxLength: 128
+                      type: string
+                    limitcpu:
+                      description: CPU Limit. The maximum cpu that the pod will be
+                        allowed to consume in a time slice before it is left unscheduled
+                        until the next slice. Default if not provided is 1000m or
+                        1 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    limitdisk:
+                      description: Ephemeral Disk Limit. The maximum amount of OS
+                        diskspace that the pod will be allowed to consume for logs,
+                        coredumps, and container images before pod is not allowed
+                        to write more data. Default if not provided is 20GB / +kubebuilder:validation:Pattern="^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+                      type: string
+                    limitmemory:
+                      description: Memory Limit. The maximum amount of RAM that the
+                        pod will be allowed to consume before it is automatically
+                        OOMKilled. Default if not provided is 8Gi, min is 3G
+                      pattern: ^([3-9]|\d{2,})([G][i])$
+                      type: string
+                    loglevel:
+                      description: Log Level. Log Level for this Pod. Overrides Cluster
+                        level setting. Default if not provided is to use Cluster settings.
+                      enum:
+                      - ERROR
+                      - WARN
+                      - INFO
+                      - DEBUG
+                      type: string
+                    natport:
+                      description: External NAT Port. UNSUPPORTED. The port on the
+                        NAT server that forwards to this service. Default if not provided
+                        is to use no NAT port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    requestcpu:
+                      description: CPU Requested. The amount of cpu that will be reserved
+                        on a node for the pod in milli CPU units. Default if not provided
+                        is 500m or .5 CPU
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestdisk:
+                      description: Ephemeral Disk Requested. The amount of OS diskspace
+                        that will be reserved on a node for the pod for logs, coredumps,
+                        and container images. Default if not provided is 20GB
+                      pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                      type: string
+                    requestmemory:
+                      description: Memory Requested. The amount of RAM that will be
+                        reserved on the node for the pod. Default if not provided
+                        is 2Gi, min is 3G
+                      pattern: ^([3-9]|\d{2,})([G][i])$
+                      type: string
+                    sshport:
+                      description: External SSH Port. The port on the host node used
+                        to handle external ssh requests. Setting this port will limit
+                        scalability. Default if not provided is to use no external
+                        SSH Port
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                  type: object
+              type: object
+            podinfolocation:
+              description: Pod Info Location. Root of directory to store misc s on
+                host node. This directory must be writeable. Default if empty is /var/mapr/podinfo.
+                This Cluster will create a subdirectory for itself under this root
+              maxLength: 3800
+              type: string
+            security:
+              description: Security. Security Settings pertaining to security in the
+                DataPlatform cluster
+              properties:
+                disablesecurity:
+                  description: Disable Security. Turn off Secure-By-Default in Cluster.
+                    Default value is false
+                  type: boolean
+                selinuxinfo:
+                  description: SE Linux Level. Use this value to set SE Linux info
+                    on containers
+                  properties:
+                    level:
+                      description: Level. CURRENTLY UNSUPPORTED. SE Linux level label
+                        that applies to most containers. Default is empty
+                      type: string
+                    mfslevel:
+                      description: Level. CURRENTLY UNSUPPORTED. SE Linux level label
+                        that applies to MFS/CLDB containers. Default is empty
+                      type: string
+                    mfsrole:
+                      description: MFS Role. CURRENTLY UNSUPPORTED. SE Linux role
+                        label that applies to MFS/CLDB containers. Default is empty
+                      type: string
+                    mfstype:
+                      description: MFS Type. CURRENTLY UNSUPPORTED. SE Linux type
+                        label that applies to MFS/CLDB containers. Default is empty
+                      type: string
+                    mfsuser:
+                      description: MFS User. CURRENTLY UNSUPPORTED. SE Linux user
+                        label that applies to MFS/CLDB containers. Default is empty
+                      type: string
+                    overwriteselinux:
+                      description: Overwrite SE Linux. CURRENTLY UNSUPPORTED. Should
+                        we overwrite the SE Linux info for containers. Default is
+                        false
+                      type: boolean
+                    role:
+                      description: Role. CURRENTLY UNSUPPORTED. SE Linux role label
+                        that applies to most containers. Default is empty
+                      type: string
+                    type:
+                      description: Type. CURRENTLY UNSUPPORTED. SE Linux type label
+                        that applies to most containers. Default is empty
+                      type: string
+                    user:
+                      description: User. CURRENTLY UNSUPPORTED. SE Linux user label
+                        that applies to most containers. Default is empty
+                      type: string
+                  type: object
+                systemusersecret:
+                  description: System Secret. Used to get pw's and id's. Default value
+                    is mapr-user-secrets
+                  maxLength: 253
+                  type: string
+                usedare:
+                  description: Use Dare. Turn on Encryption at Rest for Cluster. Default
+                    value is false
+                  type: boolean
+              type: object
+            simpledeploymentdisks:
+              description: Simple Deployment Disks. List of disks to use for MFS used
+                only in case of homogenous deployment. These disks must exist on all
+                cluster nodes. Empty by default
+              items:
+                type: string
+              type: array
+          required:
+          - baseimagetag
+          - imageregistry
+          type: object
+        status:
+          description: DataPlatformStatus defines the observed state of DataPlatform
+          properties:
+            adminclistate:
+              description: Admin CLI State. Use this to read/store Admin CLI state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            cldbstate:
+              description: CLDB State. Use this to read/store CLDB state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            collectdstate:
+              description: Collectd State. Use this to read/store Collectd state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            elasticsearchstate:
+              description: Elastic Search State. Use this to read/store Elastic Search
+                state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            fluentstate:
+              description: Fluent State. Use this to read/store Fluent state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            grafanastate:
+              description: Grafana State. Use this to read/store Grafana state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            hivemetastorestate:
+              description: Hivemetastore State. Use this to read/store hivemetastore
+                state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            httpfsstate:
+              description: HTTPfs State. Use this to read/store HTTPfs state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            kibanastate:
+              description: Kibana State. Use this to read/store Kibana state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            mfsstate:
+              description: MFS State. Use this to read/store mfs state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            nfsstate:
+              description: NFS Gateway State. Use this to read/store NFS state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            objectstorestate:
+              description: Objectstore State. Use this to read/store Objectstore S3
+                state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            opentsdbstate:
+              description: OpenTSDB State. Use this to read/store OpenTSDB state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            overallstate:
+              description: Current Overall State. Use this to read/store overall cluster
+                state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            webserverstate:
+              description: MCS State. Use this to read/store MCS state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+            zookeeperstate:
+              description: Zookeeper State. Use this to read/store Zookeeper state
+              properties:
+                currentstate:
+                  description: Current State
+                  enum:
+                  - PENDING
+                  - READY
+                  - UNHEALTHY
+                  type: string
+                message:
+                  description: Message
+                  type: string
+                timestamp:
+                  description: Timestamp
+                  type: string
+              type: object
+          type: object
+      type: object
+  version: v1
+  versions:
+  - name: v1
+    served: true
+    storage: true

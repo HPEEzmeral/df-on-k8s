@@ -1,0 +1,151 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hpe-controller-kdf
+  namespace: hpe-csi
+spec:
+  selector:
+    matchLabels:
+      app: hpe-controller-kdf # has to match .spec.template.metadata.labels
+  serviceName: "kdf-provisioner-svc"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hpe-controller-kdf
+    spec:
+      serviceAccount: hpe-csi-controller
+      priorityClassName: hpe-critical
+      imagePullSecrets:
+        - name: hpe-imagepull-secrets
+      containers:
+        - name: csi-attacher
+          securityContext:
+            privileged: true
+          image: {csi-repo}/csi-attacher:v2.2.0
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+          env:
+            - name: ADDRESS
+              value: /var/lib/csi/sockets/pluginproxy/csi.sock
+          imagePullPolicy: "Always"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/csi/sockets/pluginproxy/
+        - name: csi-provisioner
+          image: {csi-repo}/csi-provisioner:v1.6.0
+          args:
+            - "--provisioner=com.mapr.csi-kdf"
+            - "--csi-address=$(ADDRESS)"
+            - "--volume-name-prefix=mapr-pv"
+            - "--timeout=300s" # large timeout to accommodate volume clone
+            - "--v=5"
+          env:
+            - name: ADDRESS
+              value: /var/lib/csi/sockets/pluginproxy/csi.sock
+          imagePullPolicy: "Always"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/csi/sockets/pluginproxy/
+        - name: csi-snapshotter
+          image: {csi-repo}/csi-snapshotter:v3.0.2 # Works on k8s >= 1.17 when snapshotter moved from v1alpha1 to v1beta1, use v1.0.2 for k8s <= 1.16
+          imagePullPolicy: "Always"
+          args:
+            - "--csi-address=$(ADDRESS)"
+            - "--snapshot-name-prefix=mapr-snapshot"
+            - "--timeout=300s" # large timeout to accommodate volume restore from snapshot
+            - "--v=5"
+          env:
+            - name: ADDRESS
+              value: /var/lib/csi/sockets/pluginproxy/csi.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/csi/sockets/pluginproxy/
+        - name: csi-snapshot-controller # Not required on k8s <= 1.16
+          image: {csi-repo}/snapshot-controller:v3.0.2
+          imagePullPolicy: "Always"
+          args:
+            - "--leader-election=false"
+            - "--v=5"
+          env:
+            - name: ADDRESS
+              value: /var/lib/csi/sockets/pluginproxy/csi.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/csi/sockets/pluginproxy/
+        - name: liveness-probe
+          image: {csi-repo}/livenessprobe:v2.0.0
+          imagePullPolicy: "Always"
+          args:
+            - "--v=4"
+            - "--csi-address=$(ADDRESS)"
+            - "--probe-timeout=60s"
+            - "--health-port=9809"
+          env:
+            - name: ADDRESS
+              value: /var/lib/csi/sockets/pluginproxy/csi.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/csi/sockets/pluginproxy/
+        - name: csi-resizer
+          image: {csi-repo}/csi-resizer:v0.5.0
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+          env:
+            - name: ADDRESS
+              value: /var/lib/csi/sockets/pluginproxy/csi.sock
+          imagePullPolicy: "Always"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/lib/csi/sockets/pluginproxy/
+        - name: mapr-kdfprovisioner
+          securityContext:
+            privileged: true
+            allowPrivilegeEscalation: true
+          image: {kdf-repo}/csi-kdfprovisioner:1.2.1
+          imagePullPolicy: "Always"
+          args :
+            - "--nodeid=$(NODE_ID)"
+            - "--endpoint=$(CSI_ENDPOINT)"
+            - "--uniquename=k8s"
+            - "--statevolmountprefix=/apps/ksql"
+            - "--v=4"
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: CSI_ENDPOINT
+              value: unix://plugin/csi.sock
+          ports:
+            - containerPort: 9809
+              name: healthz
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 20
+            httpGet:
+              path: /healthz
+              port: healthz
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 5
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /plugin
+            - name: k8s-log-dir
+              mountPath: /var/log/csi-maprkdf
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: socket-dir
+          emptyDir: {}
+        - name: k8s-log-dir
+          hostPath:
+            path: /var/log/csi-maprkdf
+            type: DirectoryOrCreate
+        - name: timezone
+          hostPath:
+            path: /etc/localtime

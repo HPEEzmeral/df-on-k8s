@@ -1,0 +1,12 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: hpe-dataplatformoperator
+subjects:
+- kind: ServiceAccount
+  name: hpe-dataplatformoperator
+  namespace: hpe-system
+roleRef:
+  kind: ClusterRole
+  name: hpe-dataplatformoperator
+  apiGroup: rbac.authorization.k8s.io

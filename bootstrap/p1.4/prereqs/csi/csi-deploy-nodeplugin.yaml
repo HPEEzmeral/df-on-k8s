@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: hpe-csi-nodeplugin
+  namespace: hpe-csi
+spec:
+  selector:
+    matchLabels:
+      app: hpe-csi-nodeplugin
+  template:
+    metadata:
+      labels:
+        app: hpe-csi-nodeplugin
+    spec:
+      dnsPolicy: ClusterFirstWithHostNet
+      serviceAccount: hpe-csi-nodeplugin
+      hostNetwork: true
+      priorityClassName: hpe-critical
+      containers:
+        - name: csi-node-driver-registrar
+          securityContext:
+            privileged: true
+          image: {csi-repo}/csi-node-driver-registrar:v1.3.0
+          imagePullPolicy: "Always"
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+            - "--kubelet-registration-path=/var/lib/kubelet/plugins/com.mapr.csi-kdf/csi.sock"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "rm -rf /registration/com.mapr.csi-kdf /registration/com.mapr.csi-kdf-reg.sock"]
+          env:
+            - name: ADDRESS
+              value: /plugin/csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /plugin
+            - name: registration-dir
+              mountPath: /registration/
+        - name: liveness-probe
+          securityContext:
+            privileged: true
+          image: {csi-repo}/livenessprobe:v2.0.0
+          imagePullPolicy: "Always"
+          args:
+            - "--v=4"
+            - "--csi-address=$(ADDRESS)"
+            - "--probe-timeout=60s"
+            - "--health-port=9808"
+          env:
+            - name: ADDRESS
+              value: /plugin/csi.sock
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /plugin
+        - name: mapr-kdfplugin
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+            allowPrivilegeEscalation: true
+          image: {kdf-repo}/csi-kdfplugin:1.2.1.2
+          imagePullPolicy: "Always"
+          args :
+            - "--nodeid=$(NODE_ID)"
+            - "--endpoint=$(CSI_ENDPOINT)"
+            - "--maxvolumepernode=20"
+            - "--maxlogsizemb=10"
+            - "--v=4"
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: CSI_ENDPOINT
+              value: unix://plugin/csi.sock
+          ports:
+            - containerPort: 9808
+              name: healthz
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 20
+            httpGet:
+              path: /healthz
+              port: healthz
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 5
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /plugin
+            - name: pods-mount-dir
+              mountPath: {kubelet-dir}
+              mountPropagation: Bidirectional
+            - name: k8s-log-dir
+              mountPath: /var/log/csi-maprkdf
+            - name: timezone
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: core-path
+              mountPath: /opt/cores
+            - name: device-dir
+              mountPath: /dev
+      volumes:
+        - name: plugin-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/com.mapr.csi-kdf
+            type: DirectoryOrCreate
+        - name: registration-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins_registry
+            type: Directory
+        - name: pods-mount-dir
+          hostPath:
+            path: {kubelet-dir}
+            type: Directory
+        - name: k8s-log-dir
+          hostPath:
+            path: /var/log/csi-maprkdf
+            type: DirectoryOrCreate
+        - name: timezone
+          hostPath:
+            path: /etc/localtime
+        - name: core-path
+          hostPath:
+            path: /var/mapr/cores
+            type: DirectoryOrCreate
+        - name: device-dir
+          hostPath:
+            path: /dev
+            type: Directory
+      imagePullSecrets:
+        - name: hpe-imagepull-secrets

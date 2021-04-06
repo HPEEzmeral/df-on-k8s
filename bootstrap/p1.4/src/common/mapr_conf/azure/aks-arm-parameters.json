@@ -1,0 +1,29 @@
+{
+  "resourceName": {
+    "value": ""
+  },
+  "agentCount": {
+    "value": 0
+  },
+  "agentVMSize": {
+    "value": ""
+  },
+  "sshRSAPublicKey": {
+    "value": ""
+  },
+  "servicePrincipalClientId": {
+    "value": ""
+  },
+  "servicePrincipalClientSecret": {
+    "value": ""
+  },
+  "kubernetesVersion": {
+    "value": ""
+  },
+  "dnsPrefix": {
+    "value": ""
+  },
+  "osDiskSizeGB": {
+    "value": 0
+  }
+}

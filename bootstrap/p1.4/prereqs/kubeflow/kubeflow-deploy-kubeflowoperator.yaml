@@ -1,0 +1,91 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kubeflow-operator
+  namespace: kubeflow-operator
+spec:
+  selector:
+    matchLabels:
+      name: kubeflow-operator
+  template:
+    metadata:
+      name: kubeflow-operator
+      namespace: kubeflow-operator
+      labels:
+        name: kubeflow-operator
+      annotations:
+        cni.projectcalico.org/podIP: 10.192.1.241/32
+        kubernetes.io/psp: 00-privileged
+    spec:
+      volumes:
+        - name: kubeflow-manifests
+          persistentVolumeClaim:
+            claimName: kubeflow-operator-manifests
+      containers:
+        - name: kubeflow-operator
+          image: '{kubeflow-repo}/kubeflow-operator:v1.2.0-latest'
+          command:
+            - kfctl
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+          resources: {}
+          volumeMounts:
+            - mountPath: /mapr
+              name: kubeflow-manifests
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      initContainers:
+      - name: init-volumes
+        image: '{busybox-repo}busybox:1.28'
+        command: [ 'sh', '-c', "chgrp -R 0 /mapr; chmod -R g+rw /mapr" ]
+        volumeMounts:
+          - mountPath: /mapr
+            name: kubeflow-manifests
+      imagePullSecrets:
+        - name: hpe-imagepull-secrets
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      serviceAccountName: kubeflow-operator
+      serviceAccount: kubeflow-operator
+      securityContext: {}
+      schedulerName: default-scheduler
+      tolerations:
+        - key: node.kubernetes.io/not-ready
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
+        - key: node.kubernetes.io/unreachable
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
+      priority: 0
+      enableServiceLinks: true
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kubeflow-operator-manifests
+  namespace: kubeflow-operator
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1G
+---

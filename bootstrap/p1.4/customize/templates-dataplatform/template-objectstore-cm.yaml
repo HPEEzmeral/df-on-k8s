@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: objectstore-cm
+  namespace: hpe-templates-data
+data:
+  minio.json: |-
+   {
+        "fsPath": "/mapr/csi-volume//objectstore-0",
+        "deploymentMode": "S3",
+        "oldAccessKey": "",
+        "oldSecretKey": "",
+        "port": "9000",
+        "logPath": "/opt/mapr/objectstore-client/objectstore-client-2.0.0/logs/minio.log",
+        "logLevel": 4
+    }
+  objectstore.sample.logrotate: |
+    /opt/mapr/objectstore-client/objectstore-client-2.0.0/logs/minio.log
+    {
+        rotate 7
+        daily
+        compress
+        missingok
+        sharedscripts
+        postrotate
+            /bin/kill -HUP `cat /opt/mapr/pid/objectstore.pid 2> /dev/null` 2> /dev/null || true
+        endscript
+    }
+
+  pre-startup.sh: |
+    #!/usr/bin/env bash
+
+  post-startup.sh: |
+    #!/usr/bin/env bash

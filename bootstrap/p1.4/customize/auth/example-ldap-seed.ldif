@@ -1,0 +1,204 @@
+# users tree
+dn: ou=users,dc=example,dc=com
+objectClass: organizationalUnit
+ou: users
+
+# groups tree
+dn: ou=groups,dc=example,dc=com
+objectClass: organizationalUnit
+ou: groups
+
+dn: ou=peoplegroups,dc=example,dc=com
+objectClass: organizationalUnit
+ou: peoplegroups
+
+# mapr user
+dn: uid=mapr,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+givenName: mapr
+sn: mapr
+cn: mapr
+uid: mapr
+mail: mapr@example.com
+uidNumber: 5000
+gidNumber: 5000
+homeDirectory: /home/mapr
+loginShell: /bin/bash
+userPassword: mapr
+shadowLastChange: 0
+shadowMax: 0
+shadowWarning: 0
+
+# admin user
+dn: uid=admin,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+givenName: admin
+sn: admin
+cn: admin
+uid: admin
+mail: admin@example.com
+uidNumber: 5001
+gidNumber: 5001
+homeDirectory: /home/datatap
+loginShell: /bin/bash
+userPassword: admin123
+shadowLastChange: 0
+shadowMax: 0
+shadowWarning: 0
+
+# metrics user
+dn: uid=metrics,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+givenName: metrics
+sn: metrics
+cn: metrics
+uid: metrics
+mail: metrics@example.com
+uidNumber: 5002
+gidNumber: 5002
+homeDirectory: /home/metrics
+loginShell: /bin/bash
+userPassword: mapr
+shadowLastChange: 0
+shadowMax: 0
+shadowWarning: 0
+
+# user1 user
+dn: uid=user1,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+givenName: user1
+sn: user1
+cn: user1
+uid: user1
+mail: user1@example.com
+uidNumber: 5005
+gidNumber: 5005
+homeDirectory: /home/user1
+loginShell: /bin/bash
+userPassword: mapr
+shadowLastChange: 0
+shadowMax: 0
+shadowWarning: 0
+
+# user2 user
+dn: uid=user2,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+givenName: user2
+sn: user2
+cn: user2
+uid: user2
+mail: user2@example.com
+uidNumber: 5006
+gidNumber: 5005
+homeDirectory: /home/user2
+loginShell: /bin/bash
+userPassword: mapr
+shadowLastChange: 0
+shadowMax: 0
+shadowWarning: 0
+
+# Robin Spanakopita user
+dn: uid=rspanakopita,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+givenName: Robin
+sn: Spanakopita
+cn: Robin Spanakopita
+uid: rspanakopita
+mail: rspanakopita@example.com
+uidNumber: 5007
+gidNumber: 5005
+homeDirectory: /home/rspanakopita
+loginShell: /bin/bash
+userPassword: 43214321
+shadowLastChange: 0
+shadowMax: 0
+shadowWarning: 0
+
+# Nick Kiliadis user
+dn: uid=nkili,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+givenName: Nick
+sn: Kiliadis
+cn: Nick Kiliadis
+uid: nkili
+mail: nkili@example.com
+uidNumber: 5008
+gidNumber: 5005
+homeDirectory: /home/nkili
+loginShell: /bin/bash
+userPassword: 12341234
+shadowLastChange: 0
+shadowMax: 0
+shadowWarning: 0
+
+# mapr group
+dn: cn=mapr,ou=groups,dc=example,dc=com
+objectClass: top
+objectClass: posixGroup
+gidNumber: 5000
+
+# admin group
+dn: cn=admin,ou=groups,dc=example,dc=com
+objectClass: top
+objectClass: posixGroup
+gidNumber: 5001
+
+# metrics group
+dn: cn=metrics,ou=groups,dc=example,dc=com
+objectClass: top
+objectClass: posixGroup
+gidNumber: 5002
+
+# user group
+dn: cn=user,ou=groups,dc=example,dc=com
+objectClass: top
+objectClass: posixGroup
+gidNumber: 5005
+
+# mapr peoplegroup
+dn: cn=mapr,ou=peoplegroups,dc=example,dc=com
+objectClass: groupOfNames
+cn: mapr
+member: uid=mapr,ou=users,dc=example,dc=com
+
+# admin peoplegroup
+dn: cn=admin,ou=peoplegroups,dc=example,dc=com
+objectClass: groupOfNames
+cn: admin
+member: uid=mapr,ou=users,dc=example,dc=com
+member: uid=admin,ou=users,dc=example,dc=com
+member: uid=metrics,ou=users,dc=example,dc=com
+member: uid=nkili,ou=users,dc=example,dc=com
+
+# user peoplegroup
+dn: cn=user,ou=peoplegroups,dc=example,dc=com
+objectClass: groupOfNames
+cn: user
+member: uid=mapr,ou=users,dc=example,dc=com
+member: uid=admin,ou=users,dc=example,dc=com
+member: uid=metrics,ou=users,dc=example,dc=com
+member: uid=user1,ou=users,dc=example,dc=com
+member: uid=user2,ou=users,dc=example,dc=com
+member: uid=nkili,ou=users,dc=example,dc=com
+member: uid=rspanakopita,ou=users,dc=example,dc=com
+
+# developers peoplegroup
+dn: cn=developers,ou=peoplegroups,dc=example,dc=com
+objectClass: groupOfNames
+cn: developers
+member: uid=nkili,ou=users,dc=example,dc=com
+member: uid=rspanakopita,ou=users,dc=example,dc=com

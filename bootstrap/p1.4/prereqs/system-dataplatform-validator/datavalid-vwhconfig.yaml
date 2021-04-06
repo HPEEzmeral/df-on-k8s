@@ -1,0 +1,24 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: dataplatform-validator-validating-webhook-cfg
+  labels:
+    app: dataplatform-validator-app
+webhooks:
+  - name: dataplatform-validator-validating.hcp.hpe.com
+    failurePolicy: Ignore
+    clientConfig:
+      service:
+        name: dataplatform-validator-svc
+        namespace: hpe-system
+        path: /hcp/dataplatform/v1/validate
+      caBundle: {dataplatformvalidator-servercert-encoded}
+    rules:
+      - operations: [ "CREATE" ]
+        apiGroups: ["hcp.hpe.com"]
+        apiVersions: ["v1"]
+        resources: ["dataplatforms"]
+    timeoutSeconds: 20
+#    namespaceSelector:
+#      matchLabels:
+#        hpe.com/namespacetype: DataPlatform

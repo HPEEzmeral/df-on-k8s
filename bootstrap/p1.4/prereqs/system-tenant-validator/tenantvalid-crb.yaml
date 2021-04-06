@@ -1,0 +1,12 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: hpe-tenant-validator
+subjects:
+- kind: ServiceAccount
+  name: hpe-tenant-validator
+  namespace: hpe-system
+roleRef:
+  kind: ClusterRole
+  name: hpe-tenant-validator
+  apiGroup: rbac.authorization.k8s.io

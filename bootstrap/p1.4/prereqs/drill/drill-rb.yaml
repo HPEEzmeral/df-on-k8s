@@ -1,0 +1,12 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: hpe-drilloperator
+subjects:
+- kind: ServiceAccount
+  name: hpe-drilloperator
+  namespace: drill-operator
+roleRef:
+  kind: Role
+  name: hpe-drilloperator
+  apiGroup: rbac.authorization.k8s.io

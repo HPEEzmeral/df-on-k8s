@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: livy-cm
+  namespace: hpe-templates-compute
+data:
+  livy.conf: |
+    livy.repl.enable-hive-context = true
+  livy-client.conf: |
+    livy.rsc.server.connect.timeout = 600s
+    livy.rsc.client.connect.timeout = 600s
+  spark-defaults.conf: |
+    spark.kubernetes.container.image.pullSecrets imagepull
+    spark.kubernetes.container.image.pullPolicy IfNotPresent
+    spark.kubernetes.driver.request.cores 1
+    spark.kubernetes.driver.limit.cores 1
+    spark.kubernetes.executor.request.cores 1
+    spark.kubernetes.executor.limit.cores 1
+  pre-startup.sh: |
+    #!/usr/bin/env bash
+
+  post-startup.sh: |
+    #!/usr/bin/env bash

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoticket-generator
+  namespace: hpe-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoticket-generator-app
+  template:
+    metadata:
+      labels:
+        app: autoticket-generator-app
+    spec:
+      serviceAccountName: hpe-autoticket-generator
+      automountServiceAccountToken: true
+      priorityClassName: hpe-critical
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - tenantoperator
+              topologyKey: "kubernetes.io/hostname"
+      imagePullSecrets:
+        - name: hpe-imagepull-secrets
+      containers:
+      - name: autoticket-generator
+        imagePullPolicy: Always
+        image: {operator-repo}/autoticketgen-1.0.0:202104010900
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 500m
+        volumeMounts:
+          - name: autoticket-generator-certs
+            mountPath:  /opt/autotix/certs
+            readOnly: true
+      volumes:
+        - name: autoticket-generator-certs
+          secret:
+            secretName: autoticket-generator-certs

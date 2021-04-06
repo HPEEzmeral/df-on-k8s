@@ -1,0 +1,12 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: hpe-autoticket-generator
+subjects:
+- kind: ServiceAccount
+  name: hpe-autoticket-generator
+  namespace: hpe-system
+roleRef:
+  kind: ClusterRole
+  name: hpe-autoticket-generator
+  apiGroup: rbac.authorization.k8s.io
