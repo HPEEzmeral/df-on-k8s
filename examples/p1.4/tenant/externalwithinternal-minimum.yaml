@@ -1,0 +1,45 @@
+apiVersion: hcp.hpe.com/v1
+kind: Tenant
+metadata:
+  name: sampletenant
+spec:
+  clustername: dataplatform
+  clustertype: external
+  baseimagetag: "202104010902C"
+  imageregistry: gcr.io/mapr-252711
+  imagepullsecret: imagepull
+  loglocation: /var/log/mapr/
+  corelocation: /var/log/mapr/cores
+  podinfolocation: /var/log/mapr/podinfo
+  security:
+    environmenttype: hcp
+    dnsdomain: cluster.local
+    usesssd: true
+    externalconfigmap: dataplatform-external-cm
+    externalhivesiteconfigmap: dataplatform-hivesite-cm
+    externalusersecret: dataplatform-user-secrets
+    externalserversecret: dataplatform-server-secrets
+    externalclientsecret: dataplatform-client-secrets
+  debugging:
+    loglevel: INFO
+    preservefailedpods: true
+    wipelogs: false
+  tenantservices:
+    tenantcli:
+      count: 1
+    hivemetastore:
+      count: 1
+    sparkhs:
+      count: 1
+    sparkstandalone:
+      count: 2
+      mastercount: 1
+      uiproxycount: 1
+    sparkts:
+      count: 1
+    livy:
+      count: 1
+  userlist:
+    - user1
+    - user2
+    - mapr
