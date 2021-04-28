@@ -53,6 +53,7 @@ spec:
       requestmemory: 8Gi
       limitmemory: 8Gi
       sshport: 7780
+      hivesitesource: hivesite-cm
       loglevel: INFO
     sparkstandalone:
       count: 2
@@ -86,6 +87,7 @@ spec:
       limitmemory: 8Gi
       sshport: 7784
       deimage: spark-2.4.7:202104010902C
+      hivesitesource: hivesite-cm
       loglevel: INFO
 #  tenantcustomizationfiles:
 #    hivemetastoreconfig: hivemeta-cm
