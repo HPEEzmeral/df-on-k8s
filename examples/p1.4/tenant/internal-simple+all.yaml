@@ -22,10 +22,6 @@ spec:
       count: 1
     sparkhs:
       count: 1
-    sparkstandalone:
-      count: 3
-      mastercount: 1
-      uiproxycount: 1
     sparkts:
       count: 1
     livy:
