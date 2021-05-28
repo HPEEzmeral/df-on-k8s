@@ -55,29 +55,6 @@ spec:
       sshport: 7780
       hivesitesource: hivesite-cm
       loglevel: INFO
-    sparkstandalone:
-      count: 2
-      image: spark-worker-2.4.7:202104010902C
-      requestcpu: "2000m"
-      limitcpu: "8000m"
-      requestmemory: 8Gi
-      limitmemory: 8Gi
-      sshport: 7781
-      mastercount: 1
-      masterimage: spark-master-2.4.7:202104010902C
-      masterrequestcpu: "2000m"
-      masterlimitcpu: "8000m"
-      masterrequestmemory: 8Gi
-      masterlimitmemory: 8Gi
-      mastersshport: 7782
-      uiproxycount: 1
-      uiproxyimage: spark-ui-proxy-2.4.7:202104010902C
-      uiproxyrequestcpu: "2000m"
-      uiproxylimitcpu: "8000m"
-      uiproxyrequestmemory: 8Gi
-      uiproxylimitmemory: 8Gi
-      uiproxysshport: 7783
-      loglevel: INFO
     livy:
       count: 1
       image: livy-0.5.0:202104010902C
