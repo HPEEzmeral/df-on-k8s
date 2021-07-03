@@ -32,6 +32,7 @@ CLIENT_SECRET_NAME="mapr-client-secrets"
 HIVESITE_CONFIGMAP_NAME="mapr-hivesite-cm"
 OUTPUT_FILE="mapr-external-secrets.yaml"
 SSLSERVERXML_FILE=$CONFDIR/"ssl-server.xml"
+SSLCLIENTXML_FILE=$CONFDIR/"ssl-client.xml"
 KEYSTOREPASS="mapr123"
 
 # Output an error, warning or regular message
@@ -207,6 +208,14 @@ create_secure_secret() {
   if [ -f $CONFDIR/ssl_truststore.p12 ]; then
     TRUSTSTORE_P12=`cat $CONFDIR/ssl_truststore.p12 | base64 -w 0`
   fi
+  # Check if ssl-client.xml exists
+  if [ -f $SSLCLIENTXML_FILE ]; then
+    SSL_CLIENT_XML=`cat $SSLCLIENTXML_FILE | base64 -w 0`
+  fi
+  # Check if ssl-server.xml exists
+  if [ -f $SSLSERVERXML_FILE ]; then
+    SSL_SERVER_XML=`cat $SSLSERVERXML_FILE | base64 -w 0`
+  fi
   SECURE_SECRETS_FILE=$(cat <<EOF
 
 ---
@@ -233,6 +242,8 @@ data:
     $KEYSTORE_PEM
   ssl_keystore_key: >-
     $KEYSTORE_KEY
+  ssl-server.xml: >-
+    $SSL_SERVER_XML
 ---
 apiVersion: v1
 kind: Secret
@@ -251,6 +262,8 @@ data:
     $TRUSTSTORE_PEM
   ssl_truststore_key: >-
     $TRUSTSTORE_KEY
+  ssl-client.xml: >-
+    $SSL_CLIENT_XML
 EOF
 )
 SECRETS_FILE="$UNSECURE_SECRETS_FILE$SECURE_SECRETS_FILE"
