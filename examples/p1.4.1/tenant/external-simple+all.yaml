@@ -5,7 +5,7 @@ metadata:
 spec:
   clustername: dataplatform
   clustertype: external
-  baseimagetag: "202104010902C"
+  baseimagetag: "202105061945C"
   imageregistry: gcr.io/mapr-252711
   imagepullsecret: imagepull
   security:

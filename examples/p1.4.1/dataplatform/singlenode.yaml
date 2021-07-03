@@ -3,7 +3,7 @@ kind: DataPlatform
 metadata:
   name: dataplatform
 spec:
-  baseimagetag: "202104010902C"
+  baseimagetag: "202105061945C"
   imageregistry: gcr.io/mapr-252711
   environmenttype: hcp
   simpledeploymentdisks:

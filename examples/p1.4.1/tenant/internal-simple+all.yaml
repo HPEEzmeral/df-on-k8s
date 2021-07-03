@@ -4,22 +4,13 @@ metadata:
   name: sampletenant
 spec:
   clustername: dataplatform
-  clustertype: external
-  baseimagetag: "202104010902C"
+  clustertype: internal
+  baseimagetag: "202105061945C"
   imageregistry: gcr.io/mapr-252711
   imagepullsecret: imagepull
-  loglocation: /var/log/mapr/
+  loglocation: /var/log/mapr
   corelocation: /var/log/mapr/cores
   podinfolocation: /var/log/mapr/podinfo
-  security:
-    environmenttype: hcp
-    dnsdomain: cluster.local
-    usesssd: true
-    externalconfigmap: dataplatform-external-cm
-    externalhivesiteconfigmap: dataplatform-hivesite-cm
-    externalusersecret: dataplatform-user-secrets
-    externalserversecret: dataplatform-server-secrets
-    externalclientsecret: dataplatform-client-secrets
   debugging:
     loglevel: INFO
     preservefailedpods: true
@@ -32,14 +23,24 @@ spec:
     sparkhs:
       count: 1
     sparkstandalone:
-      count: 2
+      count: 3
       mastercount: 1
       uiproxycount: 1
     sparkts:
       count: 1
     livy:
       count: 1
+  tenantcustomizationfiles:
+    hivemetastoreconfig: hivemeta-cm
+    sparkhsconfig: sparkhs-cm
+    sparktsconfig: sparkthrift-cm
+    sparkmasterconfig: sparkmaster-cm
+    sparkworkerconfig: sparkworker-cm
+    sparkuiproxyconfig: sparkuiproxy-cm
+    livyconfig: livy-cm
   userlist:
     - user1
     - user2
-    - mapr
+  grouplist:
+    - group1
+    - group2

@@ -4,13 +4,31 @@ metadata:
   name: sampletenant
 spec:
   clustername: dataplatform
-  clustertype: internal
-  baseimagetag: "202104010902C"
+  clustertype: external
+  baseimagetag: "202106220630P141"
   imageregistry: gcr.io/mapr-252711
   imagepullsecret: imagepull
-  loglocation: /var/log/mapr
+  loglocation: /var/log/mapr/
   corelocation: /var/log/mapr/cores
   podinfolocation: /var/log/mapr/podinfo
+  security:
+    environmenttype: hcp
+    dnsdomain: cluster.local
+    usesssd: true
+    externalconfigmap: mapr-external-cm
+    externalhivesiteconfigmap: mapr-hivesite-cm
+    externalusersecret: mapr-user-secrets
+    externalserversecret: mapr-server-secrets
+    externalclientsecret: mapr-client-secrets
+    systemusersecret: system-user-secrets
+    ldapclientconfig: ldapclient-cm
+    sssdsecret: sssd-secrets
+    sshsecret: ssh-secrets
+    sslsecret: ssl-secrets
+    podsecuritypolicy: tenant-psp
+    role: tenant-role
+    userrole: tenant-userrole
+    terminalrole: tenantcli-role
   debugging:
     loglevel: INFO
     preservefailedpods: true
@@ -18,16 +36,16 @@ spec:
   tenantservices:
     tenantcli:
       count: 1
-      image: tenantcli-6.2.0:202104010902C
+      image: tenantcli-6.2.0:202106220630P141
       requestcpu: "2000m"
       limitcpu: "8000m"
       requestmemory: 8Gi
       limitmemory: 8Gi
       sshport: 7777
-      logLevel: INFO
+      loglevel: INFO
     hivemetastore:
       count: 1
-      image: hivemeta-2.3:202104010902C
+      image: hivemeta-2.3:202106220630P141
       useexternaldb: false
       externaldbserver: myserver.com
       requestcpu: "2000m"
@@ -38,7 +56,7 @@ spec:
       loglevel: INFO
     sparkhs:
       count: 1
-      image: spark-hs-2.4.7:202104010902C
+      image: spark-hs-2.4.7:202106220630P141
       requestcpu: "2000m"
       limitcpu: "8000m"
       requestmemory: 8Gi
@@ -47,7 +65,7 @@ spec:
       loglevel: INFO
     sparkts:
       count: 1
-      image: spark-ts-2.4.7:202104010902C
+      image: spark-ts-2.4.7:202106220630P141
       requestcpu: "2000m"
       limitcpu: "8000m"
       requestmemory: 8Gi
@@ -56,21 +74,21 @@ spec:
       loglevel: INFO
     sparkstandalone:
       count: 2
-      image: spark-worker-2.4.7:202104010902C
+      image: spark-worker-2.4.7:202106220630P141
       requestcpu: "2000m"
       limitcpu: "8000m"
       requestmemory: 8Gi
       limitmemory: 8Gi
       sshport: 7781
       mastercount: 1
-      masterimage: spark-master-2.4.7:202104010902C
+      masterimage: spark-master-2.4.7:202106220630P141
       masterrequestcpu: "2000m"
       masterlimitcpu: "8000m"
       masterrequestmemory: 8Gi
       masterlimitmemory: 8Gi
       mastersshport: 7782
       uiproxycount: 1
-      uiproxyimage: spark-ui-proxy-2.4.7:202104010902C
+      uiproxyimage: spark-ui-proxy-2.4.7:202106220630P141
       uiproxyrequestcpu: "2000m"
       uiproxylimitcpu: "8000m"
       uiproxyrequestmemory: 8Gi
@@ -79,13 +97,13 @@ spec:
       loglevel: INFO
     livy:
       count: 1
-      image: livy-0.5.0:202104010902C
+      image: livy-0.5.0:202106220630P141
       requestcpu: "2000m"
       limitcpu: "8000m"
       requestmemory: 8Gi
       limitmemory: 8Gi
       sshport: 7784
-      deimage: spark-2.4.7:202104010902C
+      deimage: spark-2.4.7:202106220630P141
       loglevel: INFO
 #  tenantcustomizationfiles:
 #    hivemetastoreconfig: hivemeta-cm

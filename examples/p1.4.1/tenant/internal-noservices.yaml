@@ -5,5 +5,5 @@ metadata:
 spec:
   clustername: dataplatform
   clustertype: internal
-  baseimagetag: "202104010902C"
+  baseimagetag: "202105061945C"
   imageregistry: gcr.io/mapr-252711

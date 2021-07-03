@@ -56,7 +56,7 @@ spec:
             defaultMode: 420
       containers:
         - name: tenantcli
-          image: gcr.io/mapr-252711/tenantcli-6.2.0:202104010902C
+          image: gcr.io/mapr-252711/tenantcli-6.2.0:202106220630P141
           command:
             - /tini
             - '--'

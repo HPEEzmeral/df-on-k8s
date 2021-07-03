@@ -3,12 +3,13 @@ kind: DataPlatform
 metadata:
   name: dataplatform
 spec:
-  baseimagetag: "202104010902C"
+  baseimagetag: "202106220630P141"
   imageregistry: gcr.io/mapr-252711
   imagepullsecret: hpe-imagepull-secrets
   environmenttype: hcp
   disableha: false
   dnsdomain: cluster.local
+  labelbasedstorage: false
   loglocation: /var/log/mapr
   corelocation: /var/mapr/cores
   podinfolocation: /var/mapr/podinfo
@@ -26,7 +27,10 @@ spec:
     version: 6.2.0
   core:
     init:
-      image: init-6.2.0:202104010902C
+      pauselayout: false
+      pausemfsstartup: false
+      readinesstimeout: 1800
+      image: init-6.2.0:202106220630P141
       requestcpu: "1000m"
       limitcpu: "16000m"
       requestmemory: 1Gi
@@ -36,7 +40,7 @@ spec:
       loglevel: INFO
     zookeeper:
       failurecount: 1
-      image: zookeeper-6.2.0:202104010902C
+      image: zookeeper-6.2.0:202106220630P141
       requestcpu: "1000m"
       limitcpu: "3000m"
       requestmemory: 1Gi
@@ -46,7 +50,7 @@ spec:
       loglevel: INFO
     cldb:
       failurecount: 1
-      image: cldb-6.2.0:202104010902C
+      image: cldb-6.2.0:202106220630P141
       diskinfo:
         diskcount: 3
         disktype: SSD
@@ -55,6 +59,9 @@ spec:
       requestcpu: "8000m"
       limitcpu: "20000m"
       requestmemory: 24Gi
+      cldbmemory: 3Gi
+      mastmemory: 2Gi
+      nfsmemory: 1Gi
       limitmemory: 64Gi
       requestdisk: 30Gi
       limitdisk: 60Gi
@@ -62,6 +69,7 @@ spec:
         - hostport: 7220
         - hostport: 7443
         - hostport: 7222
+        - hostport: 7223
         - hostport: 5660
         - hostport: 5692
         - hostport: 5724
@@ -70,7 +78,8 @@ spec:
       sshport: 5000
       loglevel: INFO
     mfs:
-      image: mfs-6.2.0:202104010902C
+      count: 2
+      image: mfs-6.2.0:202106220630P141
       groups:
         - name: group1
           count: 2
@@ -93,9 +102,25 @@ spec:
           requestdisk: 26Gi
           limitdisk: 52Gi
           loglevel: INFO
+      requestcpu: "4000m"
+      limitcpu: "12000m"
+      requestmemory: 24Gi
+      mastmemory: 2Gi
+      nfsmemory: 1Gi
+      limitmemory: 64Gi
+      requestdisk: 26Gi
+      limitdisk: 52Gi
+      loglevel: INFO
+      hostports:
+        - hostport: 5660
+        - hostport: 5692
+        - hostport: 5724
+        - hostport: 5756
+        - hostport: 8660
+      sshport: 5001
     webserver:
       count: 1
-      image: webserver-6.2.0:202104010902C
+      image: webserver-6.2.0:202106220630P141
       sshport: 5002
       requestcpu: "1000m"
       limitcpu: "2000m"
@@ -106,7 +131,7 @@ spec:
       loglevel: INFO
     admincli:
       count: 1
-      image: admincli-6.2.0:202104010902C
+      image: admincli-6.2.0:202106220630P141
       sshport: 5003
       requestcpu: "500m"
       limitcpu: "2000m"
@@ -119,7 +144,7 @@ spec:
     monitorlogs: true
     monitormetrics: true
     collectd:
-      image: collectd-5.10.0:202104010902C
+      image: collectd-5.10.0:202106220630P141
       sshport: 5004
       requestcpu: "200m"
       limitcpu: "2000m"
@@ -130,7 +155,7 @@ spec:
       loglevel: INFO
     opentsdb:
       count: 1
-      image: opentsdb-2.4.0:202104010902C
+      image: opentsdb-2.4.0:202106220630P141
       sshport: 5005
       requestcpu: "2000m"
       limitcpu: "6000m"
@@ -141,7 +166,7 @@ spec:
       loglevel: INFO
     grafana:
       count: 1
-      image: grafana-6.7.4:202104010902C
+      image: grafana-6.7.4:202106220630P141
       sshport: 5006
       requestcpu: "500m"
       limitcpu: "2000m"
@@ -151,7 +176,7 @@ spec:
       limitdisk: 30Gi
       loglevel: INFO
     fluent:
-      image: fluent-1.10.3:202104010902C
+      image: fluent-1.10.3:202106220630P141
       sshport: 5007
       requestcpu: "500m"
       limitcpu: "2000m"
@@ -162,7 +187,7 @@ spec:
       loglevel: INFO
     elasticsearch:
       count: 1
-      image: elasticsearch-6.8.8:202104010902C
+      image: elasticsearch-6.8.8:202106220630P141
       sshport: 5008
       requestcpu: "500m"
       limitcpu: "2000m"
@@ -173,7 +198,7 @@ spec:
       loglevel: INFO
     kibana:
       count: 1
-      image: kibana-6.8.8:202104010902C
+      image: kibana-6.8.8:202106220630P141
       sshport: 5009
       requestcpu: "500m"
       limitcpu: "2000m"
@@ -183,10 +208,8 @@ spec:
       limitdisk: 30Gi
       loglevel: INFO
   gateways:
-    nfs: true
-    mast: true
     objectstore:
-      image: objectstore-2.0.0:202104010902C
+      image: objectstore-2.0.0:202106220630P141
       zones:
         - name: zone1
           count: 1
@@ -205,7 +228,7 @@ spec:
           loglevel: INFO
     httpfs:
       count: 1
-      image: httpfs-1.0:202104010902C
+      image: httpfs-1.0:202106220630P141
       sshport: 5012
       hostports:
         - hostport: 14000
@@ -218,7 +241,7 @@ spec:
       loglevel: INFO
     maprgateway:
       count: 1
-      image: maprgateway-6.2.0:202104010902C
+      image: maprgateway-6.2.0:202106220630P141
       sshport: 5013
       requestcpu: "2000m"
       limitcpu: "8000m"
@@ -229,7 +252,7 @@ spec:
       loglevel: INFO
     dag:
       count: 1
-      image: dataaccessgateway-3.0:202104010902C
+      image: dataaccessgateway-3.0:202106220630P141
       sshport: 5014
       requestcpu: "1000m"
       limitcpu: "1000m"
@@ -240,7 +263,7 @@ spec:
       loglevel: INFO
     kafkarest:
       count: 1
-      image: kafkarest-5.1.2:202104010902C
+      image: kafkarest-5.1.2:202106220630P141
       sshport: 5015
       requestcpu: "2000m"
       limitcpu: "8000m"
@@ -252,7 +275,7 @@ spec:
   coreservices:
     hivemetastore:
       count: 1
-      image: hivemeta-2.3:202104010902C
+      image: hivemeta-2.3:202106220630P141
       useexternaldb: false
       externaldbserver: myserver.com
       sshport: 5016
@@ -263,28 +286,3 @@ spec:
       requestdisk: 23Gi
       limitdisk: 46Gi
       loglevel: INFO
-#  clustercustomizationfiles:
-#      podsecuritypolicy: dataplatform-psp
-#      role: dataplatform-role
-#      userrole: dataplatform-userrole
-#      sslsecret: ssl-secrets
-#      sshsecret: ssh-secrets
-#      sssdsecret: sssd-secrets
-#      ldapcertsecret: ldapcert-secret
-#      ldapconfig: ldapclient-cm
-#      zkconfig: zookeeper-cm
-#      cldbconfig: cldb-cm
-#      mfsconfig: mfs-cm
-#      webconfig: webserver-cm
-#      admincliconfig: admincli-cm
-#      collectdconfig: collectd-cm
-#      fluentconfig: fluent-cm
-#      opentsdbconfig: opentsdb-cm
-#      esconfig: elasticsearch-cm
-#      grafanaconfig: grafana-cm
-#      kibanaconfig: kibana-cm
-#      nfsconfig: nfsserver-cm
-#      objectstoreconfig: objectstore-cm
-#      httpfsconfig: httpfs-cm
-#      kafkarestconfig: kafkarest-cm
-#      hivemetaconfig: hivemetastore-cm

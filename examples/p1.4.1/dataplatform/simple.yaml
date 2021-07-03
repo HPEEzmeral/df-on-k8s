@@ -4,7 +4,7 @@ metadata:
   name: dataplatform
 spec:
   imageregistry: gcr.io/mapr-252711
-  baseimagetag: "202104010902C"
+  baseimagetag: "202105061945C"
   environmenttype: hcp
   core:
     cldb:
