@@ -1,0 +1,77 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: drillclusters.mke.hpe.com
+spec:
+  group: mke.hpe.com
+  names:
+    kind: DrillCluster
+    listKind: DrillClusterList
+    plural: drillclusters
+    singular: drillcluster
+    shortNames:
+    - dc
+  scope: Cluster
+  version: v1
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          type: object
+          properties:
+            cspace:
+              type: string
+              description: "Compute Space Name"
+            imageregistry:
+              type: string
+              description: "Drill Image Registry"
+            image:
+              type: string
+              description: "Drill Image"
+            count:
+              type: integer
+              description: "Drill Min Node Count"
+            maxcount:
+              type: integer
+              description: "Drill Max Node Count"
+            disablesecurity:
+              type: boolean
+              description: "Drill Security Toggle"
+            memory:
+              type: string
+              description: "Drill Memory Requirement"
+            cpu:
+              type: string
+              description: "Drill CPU Requirement"
+            cputhreshold:
+              type: integer
+              description: "Drill CPU Threshold for Autoscale"
+            httpport:
+              type: integer
+              description: "Drill HTTP Port"
+            userport:
+              type: integer
+              description: "Drill User Port"
+            podtimeout:
+              type: integer
+              description: "During a manual or automatic scale down of the Drill Cluster,
+                            a PreStop hook is executed on the pod replicas that are to be brought down,
+                            which instructs the Drillbit process to gracefully shutdown. This property
+                            defines the number of seconds after which pods are forcefully killed.
+                            Note: Lower values may cause running queries to fail. Default value: 600"
+            loglevel:
+              type: string
+              description: "Log level for Drill Operator. Default value: INFO"
+              enum:
+                - FATAL
+                - ERROR
+                - WARN
+                - INFO
+                - DEBUG
+                - TRACE
+                - ''
+          required:
+            - cspace
+            - imageregistry
+            - image
+
