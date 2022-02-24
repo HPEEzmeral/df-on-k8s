@@ -7,6 +7,10 @@ spec:
   clustername:   dataplatform
   clustertype:   external
   corelocation:  /var/lib/docker/mapr/cores
+  #We can use this command to fetch the AD/LDAP configs from old tenant that needs to be upgraded
+  #kubectl get tenant <TENANT NAME> -o jsonpath='{.spec.grouplist}'
+  #The output is as follows:
+  #["hpecp-tenant-7-member","hpecp-tenant-7-admin"]
   grouplist:
     - hpecp-tenant-7-member
     - hpecp-tenant-7-admin
