@@ -1,0 +1,164 @@
+apiVersion: hcp.hpe.com/v1
+kind: DataPlatform
+metadata:
+  name: mycluster
+spec:
+  baseimagetag: 202005280152-ST
+  imageregistry: gcr.io/mapr-252711
+  imagepullsecret: mapr-imagepull-secrets
+  environmenttype: vanilla
+  simpledeploymentdisks:
+    - /dev/sdc
+    - /dev/sdd
+  disableha: false
+  dnsdomain: cluster.local
+  loglocation: /var/log/mapr
+  corelocation: /var/mapr/cores
+  podinfolocation: /var/mapr/podinfo
+  security:
+    disablesecurity: false
+    systemusersecret: system-user-secrets
+    usedare: false
+  debuginfo:
+    loglevel: INFO
+    preservefailedpods: false
+    wipelogs: false
+    version: 6.1.0
+  core:
+    init:
+      image: init-6.1.0:202005280152-ST
+      requestcpu: "1000m"
+      limitcpu: "4000m"
+      requestmemory: 1Gi
+      limitmemory: 1Gi
+      requestdisk: 10Gi
+      limitdisk: 20Gi
+      logLevel: INFO
+    zookeeper:
+      failurecount: 1
+      image: zookeeper-6.1.0:202005280152-ST
+      requestcpu: "1000m"
+      limitcpu: "3000m"
+      requestmemory: 1Gi
+      limitmemory: 1Gi
+      requestdisk: 20Gi
+      limitdisk: 30Gi
+      loglevel: INFO
+    cldb:
+      failurecount: 1
+      image: cldb-6.1.0:202005280152-ST
+      diskinfo:
+        diskcount: 3
+        disktype: ssd
+        storagepoolsize: 0
+      requestcpu: "8000m"
+      limitcpu: "20000m"
+      requestmemory: 16Gi
+      limitmemory: 64Gi
+      requestdisk: 30Gi
+      limitdisk: 60Gi
+      hostports:
+        - hostport: 5660
+        - hostport: 5692
+        - hostport: 5724
+        - hostport: 5756
+      sshport: 5000
+      loglevel: INFO
+    mfs:
+      image: mfs-6.1.0:202005280152-ST
+      groups:
+        - name: group1
+          count: 2
+          diskinfo:
+            diskcount: 3
+            disktype: ssd
+            storagepoolsize: 0
+          sshport: 5001
+          hostports:
+            - hostport: 5660
+            - hostport: 5692
+            - hostport: 5724
+            - hostport: 5756
+          requestcpu: "4000m"
+          limitcpu: "12000m"
+          requestmemory: 16Gi
+          limitmemory: 64Gi
+          requestdisk: 26Gi
+          limitdisk: 52Gi
+          logLevel: INFO
+    webserver:
+      count: 1
+      image: webserver-6.1.0:202005280152-ST
+      requestcpu: "1000m"
+      limitcpu: "2000m"
+      requestmemory: 1Gi
+      limitmemory: 1Gi
+      requestdisk: 20Gi
+      limitdisk: 30Gi
+      logLevel: INFO
+    admincli:
+      count: 1
+      image: admincli-6.1.0:202005280152-ST
+      requestcpu: "500m"
+      limitcpu: "2000m"
+      requestmemory: 1Gi
+      limitmemory: 1Gi
+      requestdisk: 20Gi
+      limitdisk: 30Gi
+      sshport: 5003
+      logLevel: INFO
+  monitoring:
+    monitormetrics: true
+    collectd:
+      image: collectd-5.8.1:202005280152-ST
+      requestcpu: "200m"
+      limitcpu: "2000m"
+      requestmemory: 2Gi
+      limitmemory: 2Gi
+      requestdisk: 20Gi
+      limitdisk: 30Gi
+      logLevel: INFO
+    opentsdb:
+      count: 1
+      image: opentsdb-2.4.0:202005280152-ST
+      requestcpu: "2000m"
+      limitcpu: "6000m"
+      requestmemory: 16Gi
+      limitmemory: 16Gi
+      requestdisk: 26Gi
+      limitdisk: 52Gi
+      loglevel: INFO
+    grafana:
+      count: 1
+      image: grafana-6.0.2:202005280152-ST
+      requestcpu: "500m"
+      limitcpu: "2000m"
+      requestmemory: 4Gi
+      limitmemory: 4Gi
+      requestdisk: 20Gi
+      limitdisk: 30Gi
+      loglevel: INFO
+  gateways:
+    objectstore:
+      count: 1
+      image: objectstore-1.0.1:202005280152-ST
+      requestcpu: "1000m"
+      limitcpu: "4000m"
+      requestmemory: 2Gi
+      limitmemory: 2Gi
+      requestdisk: 20Gi
+      limitdisk: 30Gi
+      hostports:
+        - hostport: 1234
+      loglevel: INFO
+  coreservices:
+    hivemetastore:
+      count: 1
+      image: hivemeta-2.3:202005280152-ST
+      requestcpu: "1000m"
+      limitcpu: "4000m"
+      requestmemory: 8Gi
+      limitmemory: 8Gi
+      requestdisk: 23Gi
+      limitdisk: 46Gi
+      logLevel: INFO

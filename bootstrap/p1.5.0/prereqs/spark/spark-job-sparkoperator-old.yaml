@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sparkoperator-init
+  namespace: spark-operator
+  labels:
+    app.kubernetes.io/name: sparkoperator
+    app.kubernetes.io/version: v2.4.5-v1beta2
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sparkoperator
+        app.kubernetes.io/version: v2.4.5-v1beta2
+    spec:
+      imagePullSecrets:
+      - name: hpe-imagepull-secrets
+      serviceAccountName: hpe-sparkoperator
+      restartPolicy: Never
+      containers:
+      - name: main
+        image: {operator-repo}/spark-operator-2.4.5:202101110033
+        imagePullPolicy: IfNotPresent
+        command: ["/usr/bin/gencerts.sh", "-p"]

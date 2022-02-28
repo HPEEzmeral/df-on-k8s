@@ -1,0 +1,29 @@
+apiVersion: hcp.hpe.com/v1
+kind: Tenant
+metadata:
+  name: sampletenant
+spec:
+  clustername: dataplatform
+  clustertype: external
+  baseimagetag: "202202161825P150"
+  imageregistry: gcr.io/mapr-252711
+  imagepullsecret: imagepull
+  security:
+    environmenttype: hcp
+    usesssd: true
+    externalusersecret: mapr-user-secrets
+    externalconfigmap: mapr-external-cm
+  tenantservices:
+    tenantcli:
+      count: 1
+    hivemetastore:
+      count: 1
+    sparkhs:
+      count: 1
+    sparkts:
+      count: 1
+    livy:
+      count: 1
+  grouplist:
+    - group1
+    - group2

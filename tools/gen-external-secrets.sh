@@ -157,7 +157,7 @@ create_user_secret() {
   UID_B64=`printf $USER_ID | base64`
   GID_B64=`printf $GROUP_ID | base64`
 
-  UNSECURE_SECRETS_FILE=$(cat <<EOF
+  UNSECURE_SECRETS_FILE_HEADER=$(cat <<EOF
 apiVersion: v1
 kind: Secret
 metadata:
@@ -166,6 +166,12 @@ metadata:
   annotations:
     mapr.com/externalcluster: "$CLUSTER_NAME"
 type: Opaque
+EOF
+)
+
+  if [ $IS_KUBERNETES -eq $NO ]; then
+    UNSECURE_SECRETS_FILE_DATA=$(cat <<EOF
+
 data:
   MAPR_USER:     "$USER_B64"
   MAPR_PASSWORD: "$PASSWORD_B64"
@@ -174,7 +180,10 @@ data:
   MAPR_GID:      "$GID_B64"
 EOF
 )
-SECRETS_FILE="$UNSECURE_SECRETS_FILE"
+  else
+    UNSECURE_SECRETS_FILE_DATA=$(cat /tmp/user-secrets.yaml)
+  fi
+SECRETS_FILE="$UNSECURE_SECRETS_FILE_HEADER$UNSECURE_SECRETS_FILE_DATA"
 }
 
 create_secure_secret() {
@@ -216,7 +225,7 @@ create_secure_secret() {
   if [ -f $SSLSERVERXML_FILE ]; then
     SSL_SERVER_XML=`cat $SSLSERVERXML_FILE | base64 -w 0`
   fi
-  SECURE_SECRETS_FILE=$(cat <<EOF
+  SECURE_SERVER_SECRETS_FILE_HEADER=$(cat <<EOF
 
 ---
 apiVersion: v1
@@ -227,6 +236,11 @@ metadata:
   annotations:
     mapr.com/externalcluster: "$CLUSTER_NAME"
 type: Opaque
+EOF
+)
+  if [ $IS_KUBERNETES -eq $NO ]; then
+    SECURE_SERVER_SECRETS_FILE_DATA=$(cat <<EOF
+
 data:
   clusterid: >-
     $CLUSTER_ID_BASE64
@@ -244,6 +258,14 @@ data:
     $KEYSTORE_KEY
   ssl-server.xml: >-
     $SSL_SERVER_XML
+EOF
+)
+  else
+    SECURE_SERVER_SECRETS_FILE_DATA=$(cat /tmp/server-secrets.yaml)
+  fi
+
+  SECURE_CLIENT_SECRETS_FILE_HEADER=$(cat <<EOF
+
 ---
 apiVersion: v1
 kind: Secret
@@ -253,6 +275,11 @@ metadata:
   annotations:
     mapr.com/externalcluster: "$CLUSTER_NAME"
 type: Opaque
+EOF
+)
+  if [ $IS_KUBERNETES -eq $NO ]; then
+    SECURE_CLIENT_SECRETS_FILE_DATA=$(cat <<EOF
+
 data:
   ssl_truststore: >-
     $TRUSTSTORE
@@ -266,7 +293,11 @@ data:
     $SSL_CLIENT_XML
 EOF
 )
-SECRETS_FILE="$UNSECURE_SECRETS_FILE$SECURE_SECRETS_FILE"
+  else
+    SECURE_CLIENT_SECRETS_FILE_DATA=$(cat /tmp/client-secrets.yaml)
+  fi
+
+SECRETS_FILE="$UNSECURE_SECRETS_FILE_HEADER$UNSECURE_SECRETS_FILE_DATA$SECURE_SERVER_SECRETS_FILE_HEADER$SECURE_SERVER_SECRETS_FILE_DATA$SECURE_CLIENT_SECRETS_FILE_HEADER$SECURE_CLIENT_SECRETS_FILE_DATA"
 }
 
 get_maprcli_nodes() {
@@ -372,13 +403,19 @@ create_server_configmap() {
   create_node_list hbase
   HBASE_NODES=$NODES
 
-  SERVER_CONFIGMAP=$(cat <<EOF
+  SERVER_CONFIGMAP_HEADER=$(cat <<EOF
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: $SERVER_CONFIGMAP_NAME
   namespace: $EXTERNAL_SECRETS_NAMESPACE
+EOF
+)
+
+  if [ $IS_KUBERNETES -eq $NO ]; then
+    SERVER_CONFIGMAP_DATA=$(cat <<EOF
+
 data:
   MAPR_HOME: >-
     $MAPR_HOME
@@ -434,8 +471,11 @@ data:
     $HBASE_NODES
 EOF
 )
+  else
+    SERVER_CONFIGMAP_DATA=$(cat /tmp/external-cm.yaml)
+  fi
 
-  echo "$SERVER_CONFIGMAP" >> $OUTPUT_FILE
+  echo "$SERVER_CONFIGMAP_HEADER$SERVER_CONFIGMAP_DATA" >> $OUTPUT_FILE
   # Fail if unable to get cldb and ZK information using maprcli
   if [[ -z $CLDB_NODES || -z $ZK_NODES ]]; then
       echo "Failed to retrieve Cldb or Zookeeper info. Exiting.."
@@ -444,17 +484,36 @@ EOF
 }
 
 create_hivesite_configmap() {
-  HIVE_DIR=$MAPR_HOME/hive
-  if [ -d $HIVE_DIR ]; then
-    HIVE_VERSION=$(cat $HIVE_DIR/hiveversion)
-    HIVE_HOME=$HIVE_DIR/hive-$HIVE_VERSION
-    HIVESITE_FILE=$HIVE_HOME/conf/hive-site.xml
-    if [ -f $HIVESITE_FILE ]; then
-        # hive-site.xml
-        prompt "Please provide the hivesite configmap name:" $HIVESITE_CONFIGMAP_NAME
-        HIVESITE_CONFIGMAP_NAME=$ANSWER
-        hivesitexml=`cat $HIVESITE_FILE`
-        HIVE_SITE_CONFIGMAP=$(cat <<EOF
+  if [ $IS_KUBERNETES -eq $NO ]; then
+    HIVE_DIR=$MAPR_HOME/hive
+    if [ -d $HIVE_DIR ]; then
+      HIVE_VERSION=$(cat $HIVE_DIR/hiveversion)
+      HIVE_HOME=$HIVE_DIR/hive-$HIVE_VERSION
+      HIVESITE_FILE=$HIVE_HOME/conf/hive-site.xml
+      if [ -f $HIVESITE_FILE ]; then
+          # hive-site.xml
+          hivesitexml=`cat $HIVESITE_FILE`
+      else
+        echo "Hive-site.xml not found, skipping hive-site configmap.."
+        return 0
+      fi
+    else
+      echo "Hive directory $HIVE_DIR not found, Skipping hive-site confimap.."
+      return 0
+    fi
+  else
+    DATAPLATFORM=$(cat /tmp/dataplatform.namespace)
+    IS_KUBERNETES_HIVE=$(kubectl get pods -n $DATAPLATFORM | grep hivemeta | grep -v NAME | wc -l)
+    if [ $IS_KUBERNETES_HIVE -eq 0 ]; then
+      echo "There is no hivemeta pod, Skipping hive-site confimap.."
+      return 0
+    fi
+  fi
+
+  prompt "Please provide the hivesite configmap name:" $HIVESITE_CONFIGMAP_NAME
+  HIVESITE_CONFIGMAP_NAME=$ANSWER
+  # Hive is installed.  Create configmap
+  HIVE_SITE_CONFIGMAP_HEADER=$(cat <<EOF
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -463,18 +522,21 @@ metadata:
   namespace: $EXTERNAL_SECRETS_NAMESPACE
   annotations:
     mapr.com/externalcluster: "$CLUSTER_NAME"
+EOF
+  )
+
+  if [ $IS_KUBERNETES -eq $NO ]; then
+    HIVE_SITE_CONFIGMAP_DATA=$(cat <<EOF
+
 data:
   hive-site.xml: |
     `echo -n $hivesitexml`
 EOF
-        )
-        echo "$HIVE_SITE_CONFIGMAP" >> $OUTPUT_FILE
-    else
-      echo "Hive-site.xml not found, skipping hive-site configmap.."
-    fi
+    )
   else
-    echo "Hive directory $HIVE_DIR not found, Skipping hive-site confimap.."
+    HIVE_SITE_CONFIGMAP_DATA=$(cat /tmp/hivesite-cm.yaml)
   fi
+  echo "$HIVE_SITE_CONFIGMAP_HEADER$HIVE_SITE_CONFIGMAP_DATA" >> $OUTPUT_FILE
 
 }
 

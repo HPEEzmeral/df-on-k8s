@@ -1,0 +1,217 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mfs-cm
+  namespace: hpe-templates-data
+data:
+  mfs.conf: |
+    #mfs.num.compress.threads=1
+    #mfs.max.aio.events=5000
+    #mfs.disable.periodic.flush=0
+    #mfs.io.disk.timeout=60
+    #mfs.server.ip=127.0.0.1
+    #mfs.max.resync.count=16
+    #mfs.max.restore.count=16
+    #mfs.ignore.container.delete=0
+    #mfs.ignore.readdir.pattern=0
+    mfs.server.port=5660
+    #mfs.subnets.whitelist=127.0.0.1/8
+    #UNCOMMENT this line to disable bulk writes
+    #mfs.bulk.writes.enabled=0
+    #UNCOMMENT this to set the topology of this node
+    #For e.g., to set this node's topology to /compute-only uncomment the below line
+    #mfs.network.location=/compute-only
+    #mfs.ssd.trim.enabled=1
+    #mfs.disable.IO.affinity=0
+    mfs.numrpcthreads=2
+    mfs.deserialize.length=8192
+    #mfs.enable.nat=0
+    mfs.cache.lru.sizes=inode:10:meta:10:dir:30:small:10:db:15:valc:3
+    #mfs.cache.lru.sizes=inode:3:meta:6:small:27:dir:6:db:20:valc:3
+    mfs.on.virtual.machine=0
+
+  pre-startup.sh: |
+    #!/usr/bin/env bash
+
+  post-startup.sh: |
+    #!/usr/bin/env bash
+
+  mastgateway.conf: |
+    #
+    # MASTGateway Config file.
+    # Properties defined in this file are loaded during startup
+    # and are valid for only MASTGateway which loaded the config.
+    # These parameters are not persisted anywhere else.
+    #
+    # MASTGateway listening port
+    #mastgateway.port=8660
+    # Number of worker threads to execute tiered data operations
+    #mastgateway.worker.numthreads=16
+    # Number of worker threads to execute container based tiered data operations
+    #mastgateway.cntr.worker.numthreads=16
+    #
+    # Max limit on log file size
+    #mastgateway.logfile.size.mb=1024
+    #
+    #mastgateway.enable.memory.tracker=true
+    #mastgateway.ecrebuild.numthreads=8
+    #mastgateway.highpri.pool.numthreads=4
+    #mastgateway.dbasyncwork.numthreads=2
+
+  mastgateway-core-site.xml: |
+    <?xml version="1.0"?>
+
+    <configuration>
+
+    </configuration>
+
+  dbclient.conf: |
+    fs.mapr.threads=64
+
+  hadoop-metrics.properties: |
+    #CLDB metrics config - Pick one out of null,file or ganglia.
+    #Uncomment all properties in null, file or ganglia context, to send cldb metrics to that context
+
+    # Configuration of the "cldb" context for null
+    #cldb.class=org.apache.hadoop.metrics.spi.NullContextWithUpdateThread
+    #cldb.period=10
+
+    # Configuration of the "cldb" context for file
+    #cldb.class=org.apache.hadoop.metrics.file.FileContext
+    #cldb.period=60
+    #cldb.fileName=/tmp/cldbmetrics.log
+
+    # Configuration of the "cldb" context for ganglia
+    cldb.class=com.mapr.fs.cldb.counters.MapRGangliaContext31
+    cldb.period=10
+    cldb.servers=localhost:8649
+    cldb.spoof=1
+
+    #FileServer metrics config - Pick one out of null,file or ganglia.
+    #Uncomment all properties in null, file or ganglia context, to send fileserver metrics to that context
+
+    # Configuration of the "fileserver" context for null
+    #fileserver.class=org.apache.hadoop.metrics.spi.NullContextWithUpdateThread
+    #fileserver.period=10
+
+    # Configuration of the "fileserver" context for file
+    #fileserver.class=org.apache.hadoop.metrics.file.FileContext
+    #fileserver.period=60
+    #fileserver.fileName=/tmp/fsmetrics.log
+
+    # Configuration of the "fileserver" context for ganglia
+    fileserver.class=com.mapr.fs.cldb.counters.MapRGangliaContext31
+    fileserver.period=37
+    fileserver.servers=localhost:8649
+    fileserver.spoof=1
+
+    maprmepredvariant.class=com.mapr.job.mngmnt.hadoop.metrics.MaprRPCContext
+    maprmepredvariant.period=10
+    maprmapred.class=com.mapr.job.mngmnt.hadoop.metrics.MaprRPCContextFinal
+    maprmapred.period=10
+
+  hoststats.conf: |
+    # Threshold for swapping alarm - default is 100mb
+    alarm.swapping.threshold=100000
+    # Number of iterations to check for swapping - default 100
+    alarm.swapping.counter=100
+
+  mrdiagnostics.conf: |
+    #Sets path where mrdiagnostics log should store
+    #stats.log.path=/opt/mapr/logs/stats
+    #Sets polling interval
+    #stats.log.interval=1
+    #Sets cumulative log size
+    #stats.log.size=1000000
+
+  exports: |
+    # Sample Exports file
+
+    # for /mapr exports
+    # <Path> <exports_control>
+
+    #access_control -> order is specific to default
+    # list the hosts before specifying a default for all
+    #  a.b.c.d,1.2.3.4(ro) d.e.f.g(ro) (rw)
+    #  enforces ro for a.b.c.d & 1.2.3.4 and everybody else is rw
+
+    # special path to export clusters in mapr-clusters.conf. To disable exporting,
+    # comment it out. to restrict access use the exports_control
+    #
+    /mapr (rw)
+
+    #to export only certain clusters, comment out the /mapr & uncomment.
+    #/mapr/clustername (rw)
+
+    #to export /mapr only to certain hosts (using exports_control)
+    #/mapr a.b.c.d(rw) e.f.g.h(ro)
+
+    # export /mapr/cluster1 rw to a.b.c.d & ro to e.f.g.h (denied for others)
+    #/mapr/cluster1 a.b.c.d(rw) e.f.g.h(ro)
+
+    # export /mapr/cluster2 only to e.f.g.h (denied for others)
+    #/mapr/cluster2 e.f.g.h(rw)
+
+    # export /mapr/cluster3 rw to e.f.g.h & ro to others
+    #/mapr/cluster2 e.f.g.h(rw) (ro)
+
+    #to export a certain cluster, volume or a subdirectory as an alias,
+    #comment out  /mapr & uncomment
+    #/mapr/clustername         /alias1 (rw)
+    #/mapr/clustername/vol     /alias2 (rw)
+    #/mapr/clustername/vol/dir /alias3 (rw)
+    #only the alias will be visible/exposed to the nfs client not the mapr path, host options as before
+
+  nfsserver.conf: |
+    # Configuration for nfsserver
+
+    #
+    # The system defaults are in the comments
+    #
+
+    # Default compression is true
+    #Compression = true
+
+    # chunksize is 64M
+    #ChunkSize = 67108864
+
+    # Number of threads for compression/decompression: default=2
+    #CompThreads = 2
+
+    #Mount point for the ramfs file for mmap
+    #RamfsMntDir = /ramfs/mapr
+
+    # Size of the ramfile to use (percent of total physical memory) default=0.25
+    #    0: disables the use of ramfs
+    #RamfsSize = 0.25
+
+    # Loglevel = DEBUG | INFO | WARN | ERROR | CRITICAL | OFF
+    #Loglevel = INFO
+
+    #Duplicate Request cache size & timeout in seconds
+    #DrCacheSize = 20480
+    #DrCacheTimeout = 62
+    # To keep the drcache lean, we only cache the response if the
+    # time we took to populate is greater than 50% of DrCacheTimeout.
+    # Set it to 0 to disable this optimization, Note that the DrCacheSize or
+    # DrCacheTimeout will also need to be changed. Ex: if the nfsserver supports
+    # 10,000 ops/sec (modification ops): then DrCacheSize will need to change
+    # to: 10,000*DrCacheTimeout = 620,000
+    #DRCacheTimeOutOpt = 0.5
+
+    #NFS fileid, by default the fileid is of 32 bit size.
+    #Set Use32BitFileId=0 to use 64 bit fileid (inode number)
+    #Use32BitFileId=0
+
+    #Auto refresh exports time interval in mins.
+    #default is 0, means there is no auto refresh.
+    #AutoRefreshExportsTimeInterval = 5
+    MinLenForDeserialization=8192
+
+    #Windows clients do not support Access calls. So,
+    #add configurable to support Aces for them.
+    WindowsAceSupport=false
+
+    #NfsMonPort=9997
+    #MemDebugEnable=true
+    #HighMemLimitMB=20480

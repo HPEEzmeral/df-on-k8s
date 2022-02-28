@@ -1,0 +1,35 @@
+apiVersion: hcp.hpe.com/v1
+kind: DataPlatform
+metadata:
+  name: dataplatform
+spec:
+  imageregistry: gcr.io/mapr-252711
+  baseimagetag: "202202161825P150"
+  environmenttype: hcp
+  core:
+    cldb:
+      failurecount: 1
+    mfs:
+      count: 2
+  monitoring:
+    monitormetrics: true
+  gateways:
+    nfs: true
+    mast: true
+    objectstore:
+      zones:
+        - name: zone1
+          count: 1
+          hostports:
+            - hostport: 9000
+    httpfs:
+      count: 1
+    dag:
+      count: 1
+    maprgateway:
+      count: 1
+    kafkarest:
+      count: 1
+  coreservices:
+    hivemetastore:
+      count: 1

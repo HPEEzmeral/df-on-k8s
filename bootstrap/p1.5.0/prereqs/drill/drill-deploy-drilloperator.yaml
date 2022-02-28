@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drill-operator
+  namespace: drill-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: drill-operator
+  template:
+    metadata:
+      labels:
+        name: drill-operator
+    spec:
+      serviceAccountName: hpe-drilloperator
+      automountServiceAccountToken: true
+      imagePullSecrets:
+        - name: hpe-imagepull-secrets
+      containers:
+      - name: drill-operator
+        image: {operator-repo}/drill-operator-1.0.0:202006020946
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 500m
+        command:
+        - /usr/local/bin/drill-operator
+        env:
+        - name: WATCH_NAMESPACE
+          value: "drill-operator"
+        - name: POD_NAME
+          value: "drill-bit"
+        - name: OPERATOR_NAME
+          value: "drill-operator"

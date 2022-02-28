@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ldapclient-cm
+  namespace: hpe-secure
+data:
+  ldap.conf: {ldap-file-contents}
