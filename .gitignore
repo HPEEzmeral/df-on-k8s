@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+.ssh
+.vscode
+*.log
+*.pyc
+*.iml
+bootstrap/*/virtualenv
+bootstrap/*/src/virtualenv
+bootstrap/*/logs
+bootstrap/*/src/operations/services
+bootstrap/*/src/services
