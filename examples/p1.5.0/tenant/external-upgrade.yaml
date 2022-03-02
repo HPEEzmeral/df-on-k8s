@@ -3,7 +3,7 @@ kind: Tenant
 metadata:
   name: tenant-1
 spec:
-  baseimagetag:  "202202161825P150q"
+  baseimagetag:  "202202161825P150"
   clustername:   dataplatform
   clustertype:   external
   corelocation:  /var/lib/docker/mapr/cores
