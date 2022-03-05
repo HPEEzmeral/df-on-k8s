@@ -3,7 +3,7 @@ kind: DataPlatform
 metadata:
   name: dataplatform
 spec:
-  baseimagetag: "202202161825P150"
+  baseimagetag: "202202281231P150"
   imageregistry: gcr.io/mapr-252711
   imagepullsecret: hpe-imagepull-secrets
   environmenttype: hcp
@@ -27,7 +27,7 @@ spec:
     version: 6.2.0
   core:
     init:
-      image: init-6.2.0:202202161825P150
+      image: init-6.2.0:202202281231P150
       requestcpu: "1000m"
       limitcpu: "16000m"
       requestmemory: 1Gi
@@ -37,7 +37,7 @@ spec:
       loglevel: INFO
     zookeeper:
       failurecount: 1
-      image: zookeeper-6.2.0:202202161825P150
+      image: zookeeper-6.2.0:202202281231P150
       requestcpu: "1000m"
       limitcpu: "3000m"
       requestmemory: 1Gi
@@ -47,7 +47,7 @@ spec:
       loglevel: INFO
     cldb:
       failurecount: 1
-      image: cldb-6.2.0:202202161825P150
+      image: cldb-6.2.0:202202281231P150
       requestcpu: "8000m"
       limitcpu: "20000m"
       requestmemory: 16Gi
@@ -67,7 +67,7 @@ spec:
         - hostport: 8660
     admincli:
       count: 1
-      image: admincli-6.2.0:202202161825P150
+      image: admincli-6.2.0:202202281231P150
       sshport: 5003
       requestcpu: "500m"
       limitcpu: "2000m"
@@ -78,7 +78,7 @@ spec:
       loglevel: INFO
     webserver:
       count: 1
-      image: webserver-6.2.0:202202161825P150
+      image: webserver-6.2.0:202202281231P150
       sshport: 5002
       requestcpu: "1000m"
       limitcpu: "2000m"
@@ -91,7 +91,7 @@ spec:
     nfs: false
     mast: false
     objectstore:
-      image: objectstore-2.2.0:202202161825P150
+      image: objectstore-2.2.0:202202281231P150
       zones:
         - name: zone1
           count: 1

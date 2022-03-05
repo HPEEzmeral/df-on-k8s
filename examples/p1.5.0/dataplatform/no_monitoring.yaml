@@ -3,7 +3,7 @@ kind: DataPlatform
 metadata:
   name: dataplatform
 spec:
-  baseimagetag: "202202161825P150"
+  baseimagetag: "202202281231P150"
   imageregistry: gcr.io/mapr-252711
   imagepullsecret: hpe-imagepull-secrets
   environmenttype: hcp
@@ -29,7 +29,7 @@ spec:
       pauselayout: false
       pausemfsstartup: false
       readinesstimeout: 1800
-      image: init-6.2.0:202202161825P150
+      image: init-6.2.0:202202281231P150
       requestcpu: "1000m"
       limitcpu: "16000m"
       requestmemory: 1Gi
@@ -39,7 +39,7 @@ spec:
       loglevel: INFO
     zookeeper:
       failurecount: 1
-      image: zookeeper-6.2.0:202202161825P150
+      image: zookeeper-6.2.0:202202281231P150
       requestcpu: "1000m"
       limitcpu: "3000m"
       requestmemory: 1Gi
@@ -49,7 +49,7 @@ spec:
       loglevel: INFO
     cldb:
       failurecount: 1
-      image: cldb-6.2.0:202202161825P150
+      image: cldb-6.2.0:202202281231P150
       requestcpu: "8000m"
       limitcpu: "20000m"
       requestmemory: 24Gi
@@ -68,7 +68,7 @@ spec:
       sshport: 5000
       loglevel: INFO
     mfs:
-      image: mfs-6.2.0:202202161825P150
+      image: mfs-6.2.0:202202281231P150
       count: 2
       sshport: 5001
       hostports:
@@ -86,7 +86,7 @@ spec:
       loglevel: INFO
     webserver:
       count: 1
-      image: webserver-6.2.0:202202161825P150
+      image: webserver-6.2.0:202202281231P150
       sshport: 5002
       requestcpu: "1000m"
       limitcpu: "2000m"
@@ -97,7 +97,7 @@ spec:
       loglevel: INFO
     admincli:
       count: 1
-      image: admincli-6.2.0:202202161825P150
+      image: admincli-6.2.0:202202281231P150
       sshport: 5003
       requestcpu: "500m"
       limitcpu: "2000m"
@@ -110,7 +110,7 @@ spec:
     nfs: true
     mast: true
     objectstore:
-      image: objectstore-2.2.0:202202161825P150
+      image: objectstore-2.2.0:202202281231P150
       zones:
         - name: zone1
           count: 1
@@ -129,7 +129,7 @@ spec:
           loglevel: INFO
     httpfs:
       count: 1
-      image: httpfs-1.0:202202161825P150
+      image: httpfs-1.0:202202281231P150
       sshport: 5012
       hostports:
         - hostport: 14000
@@ -142,7 +142,7 @@ spec:
       loglevel: INFO
     maprgateway:
       count: 1
-      image: maprgateway-6.2.0:202202161825P150
+      image: maprgateway-6.2.0:202202281231P150
       sshport: 5013
       requestcpu: "2000m"
       limitcpu: "8000m"
@@ -153,7 +153,7 @@ spec:
       loglevel: INFO
     dag:
       count: 1
-      image: dataaccessgateway-3.0:202202161825P150
+      image: dataaccessgateway-3.0:202202281231P150
       sshport: 5014
       requestcpu: "1000m"
       limitcpu: "1000m"
@@ -164,7 +164,7 @@ spec:
       loglevel: INFO
     kafkarest:
       count: 1
-      image: kafkarest-5.1.2:202202161825P150
+      image: kafkarest-5.1.2:202202281231P150
       sshport: 5015
       requestcpu: "2000m"
       limitcpu: "8000m"
@@ -176,7 +176,7 @@ spec:
   coreservices:
     hivemetastore:
       count: 1
-      image: hivemeta-2.3:202202161825P150
+      image: hivemeta-2.3:202202281231P150
       useexternaldb: false
       externaldbserver: myserver.com
       sshport: 5016
