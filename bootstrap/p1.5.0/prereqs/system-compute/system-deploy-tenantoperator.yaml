@@ -34,7 +34,7 @@ spec:
       containers:
       - name: tenantoperator
         imagePullPolicy: Always
-        image: {operator-repo}/tenantoperator-1.0.0:202202161825P150
+        image: {operator-repo}/tenantoperator-1.0.0:202202281231P150
         resources:
           requests:
             memory: 1Gi
