@@ -27,7 +27,7 @@ spec:
         - name: hpe-imagepull-secrets
       containers:
         - name: ldap
-          image: {operator-repo}/ldap-6.2.0:202202161825P150
+          image: {operator-repo}/ldap-6.2.0:202202281231P150
           imagePullPolicy: Always
           command:
             - /container/tool/run

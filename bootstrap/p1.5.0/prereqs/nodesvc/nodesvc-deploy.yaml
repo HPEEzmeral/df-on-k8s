@@ -22,7 +22,7 @@ spec:
         - name: hpe-imagepull-secrets
       containers:
       - name: nodeservice
-        image: {operator-repo}/nodeservices-6.2.0:202202161825P150
+        image: {operator-repo}/nodeservices-6.2.0:202202281231P150
         securityContext:
           privileged: true
         imagePullPolicy: Always
