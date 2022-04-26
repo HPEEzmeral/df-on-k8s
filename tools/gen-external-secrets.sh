@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# gen-external-secrets for core 6.1, 6.2, 7.0
+
 ECHOE="echo -e"
 
 # return codes
@@ -270,8 +273,6 @@ data:
     $SSL_SERVER_XML
   maprkeycreds.jceks: >-
     $KEYSTORE_CREDS
-  maprtrustcreds.jceks: >-
-    $TRUSTSTORE_CREDS
 EOF
 )
   else
@@ -305,6 +306,8 @@ data:
     $TRUSTSTORE_KEY
   ssl-client.xml: >-
     $SSL_CLIENT_XML
+  maprtrustcreds.jceks: >-
+    $TRUSTSTORE_CREDS
 EOF
 )
   else
