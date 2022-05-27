@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sparkoperator
+  namespace: spark-operator
+  labels:
+    app.kubernetes.io/name: sparkoperator
+    app.kubernetes.io/version: v2.4.5-v1beta2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sparkoperator
+      app.kubernetes.io/version: v2.4.5-v1beta2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sparkoperator
+        app.kubernetes.io/version: v2.4.5-v1beta2
+    spec:
+      serviceAccountName: hpe-sparkoperator
+      automountServiceAccountToken: true
+      imagePullSecrets:
+      - name: hpe-imagepull-secrets
+      containers:
+      - name: sparkoperator
+        image: {operator-repo}/spark-operator-2.4.5:202101110033
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: k8s-log-dir
+          mountPath: /opt/mapr/k8s/logs
+        - name: webhook-certs
+          mountPath: /etc/webhook-certs
+        ports:
+          - containerPort: 8080
+        args:
+          - -alsologtostderr
+          - -log_dir=/opt/mapr/k8s/logs/
+          - -v=2
+          - -enable-webhook=true
+          - install-crds=false
+      volumes:
+      - name: k8s-log-dir
+        hostPath:
+          path: /var/log/mapr/spark-operator
+          type: DirectoryOrCreate
+      - name: webhook-certs
+        secret:
+          secretName: spark-webhook-certs

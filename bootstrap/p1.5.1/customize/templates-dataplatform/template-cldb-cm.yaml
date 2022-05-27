@@ -1,0 +1,490 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cldb-cm
+  namespace: hpe-templates-data
+data:
+  cldb.conf: |
+    #
+    # CLDB Config file.
+    # Properties defined in this file are loaded during startup
+    # and are valid for only CLDB which loaded the config.
+    # These parameters are not persisted anywhere else.
+    #
+    # Wait until minimum number of fileserver register with
+    # CLDB before creating Root Volume
+    cldb.min.fileservers=1
+    # CLDB listening port
+    cldb.port=7222
+    # Number of worker threads
+    cldb.numthreads=10
+    # CLDB webport
+    cldb.web.port=7221
+    # CLDB https port
+    cldb.web.https.port=7443
+    # Disable duplicate hostid detection
+    cldb.detect.dup.hostid.enabled=false
+    #cldb.enable.memory.tracker=true
+    # Deprecated: This param is no longer supported. To configure
+    # the container cache, use the param cldb.containers.cache.percent
+    # Number of RW containers in cache
+    #cldb.containers.cache.entries=1000000
+    #
+    # Percentage (integer) of Xmx setting to be used for container cache
+    #cldb.containers.cache.percent=20
+    #
+    # Topology script to be used to determine
+    # Rack topology of node
+    # Script should take an IP address as input and print rack path
+    # on STDOUT. eg
+    # $>/home/mapr/topo.pl 10.10.10.10
+    # $>/mapr-rack1
+    # $>/home/mapr/topo.pl 10.10.10.20
+    # $>/mapr-rack2
+    #net.topology.script.file.name=/home/mapr/topo.pl
+    #
+    # Topology mapping file used to determine
+    # Rack topology of node
+    # File is of a 2 column format (space separated)
+    # 1st column is an IP address or hostname
+    # 2nd column is the rack path
+    # Line starting with '#' is a comment
+    # Example file contents
+    # 10.10.10.10 /mapr-rack1
+    # 10.10.10.20 /mapr-rack2
+    # host.foo.com /mapr-rack3
+    #net.topology.table.file.name=/home/mapr/topo.txt
+    #
+    # ZooKeeper address
+    cldb.zookeeper.servers=zk-0.zk-svc.dataplatform.svc.cluster.local:5181,zk-1.zk-svc.dataplatform.svc.cluster.local:5181,zk-2.zk-svc.dataplatform.svc.cluster.local:5181
+    # Hadoop metrics jar version
+    # NOTE : This property wont be used and will be picked up from /opt/mapr/hadoop/hadoopversion
+    hadoop.version=2.7.4
+    # CLDB JMX remote port
+    cldb.jmxremote.port=7220
+    num.volmirror.threads=1
+    # Set this to set the default topology for all volumes and nodes
+    # The default for all volumes is /data by default
+    # UNCOMMENT the below to change the default topology.
+    # For e.g., set cldb.default.topology=/mydata to create volumes
+    # in /mydata topology and to place all nodes in /mydata topology
+    # by default
+    #cldb.default.topology=/mydata
+    # cleanup.pool.threads.count=2
+    enable.replicas.invariant.check=false
+    #cldb.enable.memory.tracker=true
+
+  mfs.conf: |
+    #mfs.num.compress.threads=1
+    #mfs.max.aio.events=5000
+    #mfs.disable.periodic.flush=0
+    #mfs.io.disk.timeout=60
+    #mfs.server.ip=127.0.0.1
+    #mfs.max.resync.count=16
+    #mfs.max.restore.count=16
+    #mfs.ignore.container.delete=0
+    #mfs.ignore.readdir.pattern=0
+    mfs.server.port=5660
+    #mfs.subnets.whitelist=127.0.0.1/8
+    #UNCOMMENT this line to disable bulk writes
+    #mfs.bulk.writes.enabled=0
+    #UNCOMMENT this to set the topology of this node
+    #For e.g., to set this node's topology to /compute-only uncomment the below line
+    #mfs.network.location=/compute-only
+    #mfs.ssd.trim.enabled=1
+    #mfs.disable.IO.affinity=0
+    mfs.numrpcthreads=2
+    mfs.deserialize.length=8192
+    #mfs.enable.nat=0
+    mfs.cache.lru.sizes=inode:10:meta:10:dir:30:small:10:db:15:valc:3
+    #mfs.cache.lru.sizes=inode:3:meta:6:small:27:dir:6:db:20:valc:3
+    mfs.on.virtual.machine=0
+
+  pre-startup.sh: |
+    #!/usr/bin/env bash
+
+    function set_instances_pre() {
+      msg_info "MFS Instance: Setting MFS Instances by file..."
+      if [ $STORAGE_POOLS_PER_MFS -gt 0 ]; then
+        rm -f /opt/mapr/conf/mfsinstances_*
+
+        if [ $STORAGE_POOL_SIZE -eq 0 ]; then
+          STORAGE_POOL_SIZE=3
+          msg_info "MFS Instance: storagepoolsize in CR was set to 0. Calculated storagepoolsize to be: ${STORAGE_POOL_SIZE}"
+        fi
+
+        local sps=$((DISK_COUNT / STORAGE_POOL_SIZE))
+        # if the resulting sps is greater than 1, we want to add 1 to sps to handle the partial sized sp
+        if [ $((DISK_COUNT % STORAGE_POOL_SIZE)) -gt 0 ] ; then
+          sps=$((sps + 1))
+        fi
+
+        local instances=$((sps / STORAGE_POOLS_PER_MFS))
+        # if the resulting instances is 1, we want to add 1 to sps to handle the partial sized sp instance
+        if [ $((sps % STORAGE_POOLS_PER_MFS)) -gt 0 ] ; then
+          instances=$((instances + 1))
+        fi
+
+        msg_info "MFS Instance: The total instance count is: ${instances} by inspecting disk count: ${DISK_COUNT}, storage pool size: ${STORAGE_POOL_SIZE}, and storage pools per MFS: ${STORAGE_POOLS_PER_MFS}"
+        touch "/opt/mapr/conf/mfsinstances_${instances}" || msg_err "Could not touch MFS instance file"
+        chmod 0600 "/opt/mapr/conf/mfsinstances_${instances}" || msg_err "Could not chmod MFS instance file"
+      else
+        msg_info "MFS Instance: Using default storage pools per MFS instances"
+      fi
+    }
+
+    set_instances_pre
+
+  post-startup.sh: |
+    #!/usr/bin/env bash
+
+    function set_instances_post() {
+      msg_info "MFS Instance: Setting MFS Instances by maprcli..."
+      local internalName="$POD_NAME$INTERNAL_SUFFIX"
+      if [ $STORAGE_POOLS_PER_MFS -gt 0 ]; then
+        msg_info "MFS Instance: Calling maprcli node modify to change storage pools per MFS instances for cluster ${MAPR_CLUSTER} nodes ${internalName} sp per instance ${STORAGE_POOLS_PER_MFS}"
+        until maprcli node modify -cluster ${MAPR_CLUSTER} -nodes ${internalName} -numSpsPerInstance ${STORAGE_POOLS_PER_MFS}; do
+          msg_info "MFS Instance: Waiting for maprcli node modify to work"
+          sleep 5
+        done
+        # TODO: SWF: We should compare the maprinstances_# file against the number of instances from running "mrconfig info instances"
+        # Throw a warning if they do not match
+      else
+        msg_info "MFS Instance: Using default storage pools per MFS instances"
+      fi
+    }
+
+    set_instances_post
+
+  startup-cluster.sh: |
+
+    function create_directories() {
+      msg_info "Creating tenant directories..."
+      hadoop fs -mkdir -p /user/mapr/tenants/exampletenant/examples
+      hadoop fs -mkdir -p /user/mapr/tenants/exampletenant/notebooks
+      hadoop fs -mkdir -p /user/mapr/tenants/exampletenant/models
+      hadoop fs -mkdir -p /user/mapr/tenants/exampletenant/trainingdata
+      hadoop fs -mkdir -p /user/mapr/tenants/exampletenant/logs
+      hadoop fs -mkdir -p /user/mapr/tenants/exampletenant/libraries
+      hadoop fs -ls /user/mapr/tenants/exampletenant/
+    }
+
+    function create_default_service_tickets() {
+      msg_info "Creating default tickets..."
+      # TODO - move to randomized pw
+      local hpeAdminUser=admin
+      local hpeAdminGroup=admin
+      local hpeAdminUid=5001
+      local hpeAdminGid=5001
+      local metricsUser=metrics
+      local metricsGroup=metrics
+      local metricsUid=5002
+      local metricsGid=5002
+      local customerTicket="/tmp/${CUSTOMER_USER}_${CUSTOMER_UID}"
+      local serviceTicket="/tmp/${MAPR_USER}_${MAPR_UID}"
+      local adminTicket="/tmp/${hpeAdminUser}_${hpeAdminUid}"
+      local metricsTicket="/tmp/${metricsUser}_${metricsUid}"
+      local securitySecretName="server"
+      local systemSecretName="system"
+      local containerTicketKey="CONTAINER_TICKET"
+      local serviceTicketKey="maprserviceticket"
+      local serverTicketKey="maprserverticket"
+      local userTicketKey="mapruserticket"
+      local customerTicketKey="customeradminticket"
+      local metricsTicketKey="maprmetricsticket"
+      local adminTicketKey="hpeadminticket"
+      local clusteridKey="clusterid"
+      local sslKeystoreKey="ssl_keystore"
+      local sslKeystorePEMKey="ssl_keystore.pem"
+      local sslKeystoreP12Key="ssl_keystore.p12"
+      local serverTicket="${MAPR_HOME}/conf/${serverTicketKey}"
+      local userTicket="${MAPR_HOME}/conf/${userTicketKey}"
+      local clusterid="${MAPR_HOME}/conf/${clusteridKey}"
+      local keystore="${MAPR_HOME}/conf/${sslKeystoreKey}"
+      local keystorepem="${MAPR_HOME}/conf/${sslKeystorePEMKey}"
+      local keystorep12="${MAPR_HOME}/conf/${sslKeystoreP12Key}"
+      local testTicket=`kubectl get secret ${securitySecretName} -o "jsonpath={.data['maprserviceticket']}"`
+      echo testTicket=${testTicket}
+      if [[ ${testTicket} == "" ]]; then
+        msg_info "Cannot find service ticket in ${securitySecretName} secret. Creating credentials..."
+        maprlogin generateticket -type service -user ${MAPR_USER} -out /tmp/maprserviceticket_5000
+        if [[ $CUSTOMER_UID -eq 0 ]]; then
+          maprcli acl set -type cluster -user root:fc ${MAPR_USER}:fc ${hpeAdminUser}:fc ${metricsUser}:fc
+        else
+          maprcli acl set -type cluster -user root:fc ${MAPR_USER}:fc ${hpeAdminUser}:fc ${metricsUser}:fc ${CUSTOMER_USER}:fc
+          maprlogin generateticket -type service -user ${CUSTOMER_USER} -out ${customerTicket}
+        fi
+        maprcli acl show -type cluster
+        msg_info "Creating user tickets..."
+        maprlogin generateticket -type service -user ${MAPR_USER} -out ${serviceTicket}
+        maprlogin generateticket -type service -user ${hpeAdminUser} -out ${adminTicket}
+        maprlogin generateticket -type service -user ${metricsUser} -out ${metricsTicket}
+        msg_info "Replacing keys in ${securitySecretName} secret: $securitySecretName"
+        $KUBECTL delete secret ${securitySecretName} > /dev/null 2>&1
+        if [[ $CUSTOMER_UID -eq 0 ]]; then
+          msg_info "CUSTOMER_UID=0. Will not create customer ticket..."
+          $KUBECTL create secret generic ${securitySecretName} \
+             --from-file=${containerTicketKey}=${serviceTicket} \
+             --from-file=${serviceTicketKey}=${serviceTicket} \
+             --from-file=${serverTicketKey}=${serverTicket} \
+             --from-file=${userTicketKey}=${userTicket} \
+             --from-file=${adminTicketKey}=${adminTicket} \
+             --from-file=${metricsTicketKey}=${metricsTicket} \
+             --from-file=${clusteridKey}=${clusterid} \
+             --from-file=${sslKeystoreKey}=${keystore} \
+             --from-file=${sslKeystoreP12Key}=${keystorep12} \
+             --from-file=${sslKeystorePEMKey}=${keystorepem}
+        else
+          msg_info "CUSTOMER_UID=${CUSTOMER_ID}. Creating customer ticket..."
+          $KUBECTL create secret generic ${securitySecretName} \
+            --from-file=${containerTicketKey}=${serviceTicket} \
+            --from-file=${serviceTicketKey}=${serviceTicket} \
+            --from-file=${serverTicketKey}=${serverTicket} \
+            --from-file=${userTicketKey}=${userTicket} \
+            --from-file=${customerTicketKey}=${customerTicket} \
+            --from-file=${adminTicketKey}=${adminTicket} \
+            --from-file=${metricsTicketKey}=${metricsTicket} \
+            --from-file=${clusteridKey}=${clusterid} \
+            --from-file=${sslKeystoreKey}=${keystore} \
+            --from-file=${sslKeystoreP12Key}=${keystorep12} \
+            --from-file=${sslKeystorePEMKey}=${keystorepem}
+        fi
+        msg_info "Patching secret/${systemSecretName} with CONTAINER_TICKET..."
+        svcTicket=`base64 ${serviceTicket} -w 0`
+        $KUBECTL patch secret/${systemSecretName} --type merge -p "{ \"data\": { \"CONTAINER_TICKET\": \"${svcTicket}\" } }"
+      else
+        msg_info "Found service ticket. Skipping credential create..."
+      fi
+
+    }
+
+
+
+  mastgateway.conf: |
+    #
+    # MASTGateway Config file.
+    # Properties defined in this file are loaded during startup
+    # and are valid for only MASTGateway which loaded the config.
+    # These parameters are not persisted anywhere else.
+    #
+    # MASTGateway listening port
+    #mastgateway.port=8660
+    # Number of worker threads to execute tiered data operations
+    #mastgateway.worker.numthreads=16
+    # Number of worker threads to execute container based tiered data operations
+    #mastgateway.cntr.worker.numthreads=16
+    #
+    # Max limit on log file size
+    #mastgateway.logfile.size.mb=1024
+    #
+    #mastgateway.enable.memory.tracker=true
+    #mastgateway.ecrebuild.numthreads=8
+    #mastgateway.highpri.pool.numthreads=4
+    #mastgateway.dbasyncwork.numthreads=2
+
+  mastgateway-core-site.xml: |
+    <?xml version="1.0"?>
+
+
+    <configuration>
+
+    </configuration>
+
+
+  dbclient.conf: |
+    fs.mapr.threads=64
+
+  hadoop-metrics.properties: |
+    #CLDB metrics config - Pick one out of null,file or ganglia.
+    #Uncomment all properties in null, file or ganglia context, to send cldb metrics to that context
+
+    # Configuration of the "cldb" context for null
+    #cldb.class=org.apache.hadoop.metrics.spi.NullContextWithUpdateThread
+    #cldb.period=10
+
+    # Configuration of the "cldb" context for file
+    #cldb.class=org.apache.hadoop.metrics.file.FileContext
+    #cldb.period=60
+    #cldb.fileName=/tmp/cldbmetrics.log
+
+    # Configuration of the "cldb" context for ganglia
+    cldb.class=com.mapr.fs.cldb.counters.MapRGangliaContext31
+    cldb.period=10
+    cldb.servers=localhost:8649
+    cldb.spoof=1
+
+    #FileServer metrics config - Pick one out of null,file or ganglia.
+    #Uncomment all properties in null, file or ganglia context, to send fileserver metrics to that context
+
+    # Configuration of the "fileserver" context for null
+    #fileserver.class=org.apache.hadoop.metrics.spi.NullContextWithUpdateThread
+    #fileserver.period=10
+
+    # Configuration of the "fileserver" context for file
+    #fileserver.class=org.apache.hadoop.metrics.file.FileContext
+    #fileserver.period=60
+    #fileserver.fileName=/tmp/fsmetrics.log
+
+    # Configuration of the "fileserver" context for ganglia
+    fileserver.class=com.mapr.fs.cldb.counters.MapRGangliaContext31
+    fileserver.period=37
+    fileserver.servers=localhost:8649
+    fileserver.spoof=1
+
+    maprmepredvariant.class=com.mapr.job.mngmnt.hadoop.metrics.MaprRPCContext
+    maprmepredvariant.period=10
+    maprmapred.class=com.mapr.job.mngmnt.hadoop.metrics.MaprRPCContextFinal
+    maprmapred.period=10
+
+  hoststats.conf: |
+    # Threshold for swapping alarm - default is 100mb
+    alarm.swapping.threshold=100000
+    # Number of iterations to check for swapping - default 100
+    alarm.swapping.counter=100
+
+  mrdiagnostics.conf: |
+    #Sets path where mrdiagnostics log should store
+    #stats.log.path=/opt/mapr/logs/stats
+    #Sets polling interval
+    #stats.log.interval=1
+    #Sets cumulative log size
+    #stats.log.size=1000000
+
+  log4j.cldb.properties: |
+    # Default log4j options
+    root.logger=INFO,R
+    cldb.audit.logger=INFO,CADRFA
+    cldb.mirror.audit.logger=INFO,CMADRFA
+    pbs.audit.logger=INFO,CPBSDRFA
+    cldb.disk.balancer.logger=INFO,CDBDRFA
+    cldb.role.balancer.logger=INFO,CRBDRFA
+    cldb.time.skew.logger=INFO,CTSDRFA
+    cldb.fs.summary.logger=INFO,CFSDRFA
+    log4j.rootLogger=${root.logger}
+    log.file=log4.log
+    cldb.audit.file=/tmp/cldbaudit.log.json
+    pbs.audit.file=/tmp/pbsaudit.log.json
+    cldb.disk.balancer.log.file=/tmp/cldbdiskbalancer.log
+    cldb.role.balancer.log.file=/tmp/cldbrolebalancer.log
+    cldb.time.skew.log.file=/tmp/timeskew.log
+    cldb.fs.summary.log.file=/tmp/cldbfssummary.log
+    log4j.threshold=ALL
+
+    ### direct log messages to stdout ###
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    log4j.appender.stdout.Target=System.out
+    log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+    log4j.appender.stdout.layout.ConversionPattern=%d{ABSOLUTE} %5p %c{1} %t:%L - %m%n
+    #log4j.rootLogger=debug, stdout
+
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    #log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+    log4j.appender.stdout.layout=com.mapr.log4j.PatternLayoutByLevelWithHeader
+    # Pattern to output the caller's file name and line number.
+    log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
+    log4j.appender.stdout.layout.ConversionPattern=%d{ISO8601} %p %c %M %t: %m%n
+
+    #Used by CLDB Alone
+    log4j.appender.R=com.mapr.log4j.MaprfsRollingFileAppender
+    log4j.appender.R.File=${log.file}
+    log4j.appender.R.Append=true
+    log4j.appender.R.bufferSize=8192
+    log4j.appender.R.bufferedIO=true
+    log4j.appender.R.immediateFlush=false
+    log4j.appender.R.MaxFileSize=100MB
+    # Keep one backup file
+    log4j.appender.R.MaxBackupIndex=9
+    log4j.appender.R.layout=org.apache.log4j.PatternLayout
+    log4j.appender.R.layout=com.mapr.log4j.PatternLayoutByLevelWithHeader
+    log4j.appender.R.layout.ConversionPattern=%d{ISO8601} %p %c{1} [%t]: %m%n
+
+
+    # Daily rolling file appender
+    log4j.appender.DRFA=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.DRFA.Append=true
+    log4j.appender.DRFA.File=${log.file}
+    # Rollver at midnight
+    log4j.appender.DRFA.DatePattern=.yyyy-MM-dd
+    # 30-day backup
+    #log4j.appender.DRFA.MaxBackupIndex=30
+    log4j.appender.DRFA.layout=org.apache.log4j.PatternLayout
+    log4j.appender.DRFA.layout=com.mapr.log4j.PatternLayoutByLevelWithHeader
+    # Pattern format: Date LogLevel LoggerName LogMessage
+    log4j.appender.DRFA.layout.ConversionPattern=%d{ISO8601} %-5p %c [%t]: %m%n
+
+    log4j.appender.DRFA.layout.InfoPattern = %d{ISO8601} %-5p %c [%t]: %m%n
+    log4j.appender.DRFA.layout.DebugPattern = %d{ISO8601} %-5p %c [%t]: %m%n
+    log4j.appender.DRFA.layout.ErrorPattern = %d{ISO8601} %-5p %c %M [%t]: %m%n
+    log4j.appender.DRFA.layout.FatalPattern = %d{ISO8601} %-5p %c %M [%t]: %m%n
+
+    # Custom logging level
+    log4j.logger.org.apache.zookeeper=INFO
+    #log4j.logger.com.mapr.baseutils.zookeeper.ZKDataRetrieval=WARN
+
+    # CLDB audit logging
+    log4j.appender.CADRFA=org.apache.log4j.MaprfsDailyRollingUTCAppender
+    log4j.appender.CADRFA.Append=true
+    log4j.appender.CADRFA.File=${cldb.audit.file}
+    #log4j.appender.CADRFA.MaxBackupIndex=90
+    log4j.appender.CADRFA.layout=com.mapr.log4j.NoFormatLayout
+    log4j.category.AuditLogger=${cldb.audit.logger}
+    log4j.additivity.AuditLogger=false
+
+    # CLDB mirror audit logging
+    log4j.appender.CMADRFA=org.apache.log4j.MaprfsDailyRollingUTCAppender
+    log4j.appender.CMADRFA.Append=true
+    log4j.appender.CMADRFA.File=${cldb.mirror.audit.file}
+    #log4j.appender.CMADRFA.MaxBackupIndex=90
+    log4j.appender.CMADRFA.layout=com.mapr.log4j.NoFormatLayout
+    log4j.category.MirrorAuditLogger=${cldb.mirror.audit.logger}
+    log4j.additivity.MirrorAuditLogger=false
+
+    # Policy based security audit logging
+    log4j.appender.CPBSDRFA=org.apache.log4j.MaprfsDailyRollingUTCAppender
+    log4j.appender.CPBSDRFA.Append=true
+    log4j.appender.CPBSDRFA.File=${pbs.audit.file}
+    #log4j.appender.CPBSDRFA.MaxBackupIndex=90
+    log4j.appender.CPBSDRFA.layout=com.mapr.log4j.NoFormatLayout
+    log4j.category.PbsAuditLogger=${pbs.audit.logger}
+    log4j.additivity.PbsAuditLogger=false
+
+    # CLDB Disk Balancer logging
+    log4j.appender.CDBDRFA=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.CDBDRFA.Append=true
+    log4j.appender.CDBDRFA.File=${cldb.disk.balancer.log.file}
+    log4j.appender.CDBDRFA.DatePattern=.yyyy-MM-dd
+    log4j.appender.CDBDRFA.layout=com.mapr.log4j.PatternLayoutByLevelWithHeader
+    log4j.appender.CDBDRFA.layout.ConversionPattern=%d{ISO8601} %m%n
+    log4j.category.CLDBDiskBalancerLogger=${cldb.disk.balancer.logger}
+    log4j.additivity.CLDBDiskBalancerLogger=false
+
+
+    # CLDB Role Balancer logging
+    log4j.appender.CRBDRFA=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.CRBDRFA.Append=true
+    log4j.appender.CRBDRFA.File=${cldb.role.balancer.log.file}
+    log4j.appender.CRBDRFA.DatePattern=.yyyy-MM-dd
+    log4j.appender.CRBDRFA.layout=com.mapr.log4j.PatternLayoutByLevelWithHeader
+    log4j.appender.CRBDRFA.layout.ConversionPattern=%d{ISO8601} %m%n
+    log4j.category.CLDBRoleBalancerLogger=${cldb.role.balancer.logger}
+    log4j.additivity.CLDBRoleBalancerLogger=false
+
+    # CLDB Time Skew logging
+    log4j.appender.CTSDRFA=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.CTSDRFA.Append=true
+    log4j.appender.CTSDRFA.File=${cldb.time.skew.log.file}
+    log4j.appender.CTSDRFA.DatePattern=.yyyy-MM-dd
+    log4j.appender.CTSDRFA.layout=com.mapr.log4j.PatternLayoutByLevelWithHeader
+    log4j.appender.CTSDRFA.layout.ConversionPattern=%d{ISO8601} %m%n
+    log4j.category.CLDBTimeSkewLogger=${cldb.time.skew.logger}
+    log4j.additivity.CLDBTimeSkewLogger=false
+
+    # CLDB FS Summary logging
+    log4j.appender.CFSDRFA=org.apache.log4j.DailyRollingFileAppender
+    log4j.appender.CFSDRFA.Append=true
+    log4j.appender.CFSDRFA.File=${cldb.fs.summary.log.file}
+    log4j.appender.CFSDRFA.DatePattern=.yyyy-MM-dd
+    log4j.appender.CFSDRFA.layout=com.mapr.log4j.PatternLayoutByLevelWithHeader
+    log4j.appender.CFSDRFA.layout.ConversionPattern=%d{ISO8601} %m%n
+    log4j.category.CLDBFsSummaryLogger=${cldb.fs.summary.logger}
+    log4j.additivity.CLDBFsSummaryLogger=false

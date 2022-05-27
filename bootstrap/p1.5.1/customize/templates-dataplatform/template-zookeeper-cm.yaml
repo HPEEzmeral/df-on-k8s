@@ -1,0 +1,172 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zookeeper-cm
+  namespace: hpe-templates-data
+data:
+  zoo.cfg: |
+    # The number of milliseconds of each tick
+    tickTime=2000
+    # The number of ticks that the initial
+    # synchronization phase can take
+    initLimit=20
+    # The number of ticks that can pass between
+    # sending a request and getting an acknowledgement
+    syncLimit=10
+    # the directory where the snapshot is stored.
+    dataDir=/opt/mapr/zkdata
+    # the port at which the clients will connect
+    clientPort=5181
+    # max number of client connections
+    maxClientCnxns=1000
+    #autopurge interval - 24 hours
+    autopurge.purgeInterval=24
+    #superuser to allow zk nodes delete
+    superUser=mapr
+    #readuser to allow read zk info for authenticated clients
+    readUser=anyone
+    # cldb key location
+    mapr.cldbkeyfile.location=/opt/mapr/conf/cldb.key
+    #security provider name
+    authMech=MAPR-SECURITY
+    # security auth provider
+    authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
+    # use maprserverticket not userticket for auth
+    mapr.usemaprserverticket=true
+    #
+    # For upgrade from 3.4.11
+    snapshot.trust.empty=true
+    #
+    # ZK server-to-server SSL encryption
+    sslQuorum=false
+    serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory
+    ssl.quorum.keyStore.location=/opt/mapr/conf/ssl_keystore.p12
+    ssl.quorum.keyStore.password=mapr123
+    ssl.quorum.trustStore.location=/opt/mapr/conf/ssl_truststore.p12
+    ssl.quorum.trustStore.password=mapr123
+    ssl.quorum.protocol=TLS
+    ssl.quorum.enabledProtocols=TLSv1.2
+    # MapR uses the cluster name in the certificates, no host names
+    ssl.quorum.hostnameVerification=false
+    #
+    #  The Jetty Admin Server allows ZK access via a URL
+    #  Like  http://localhost:8080/commands/stat
+    #  Default port 8080 may cause conflicts; thus server disabled by default
+    # admin.serverPort=8080
+    admin.enableServer=false
+    #
+    # ZK-to-ZK server authentication using MAPR-SASL
+    # Set quorum.auth.enableSasl=false for insecure cluster, =true for secure cluster
+    quorum.auth.enableSasl=true
+    quorum.auth.learnerRequireSasl=true
+    quorum.auth.serverRequireSasl=true
+    quorum.auth.learner.loginContext=QuorumLearner
+    quorum.auth.server.loginContext=QuorumServer
+    quorum.cnxn.threads.size=20
+    server.0=zk-0.zk-svc.dataplatform.svc.cluster.local:2888:3888;5181
+    server.1=zk-1.zk-svc.dataplatform.svc.cluster.local:2888:3888;5181
+    server.2=zk-2.zk-svc.dataplatform.svc.cluster.local:2888:3888;5181
+    # Added for Kubernetes liveliness probe check
+    4lw.commands.whitelist=ruok
+
+  zookeeper-env.sh: |
+    JMXDISABLE=true
+
+  configuration.xsl: |
+    <?xml version="1.0"?>
+    <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+    <xsl:output method="html"/>
+    <xsl:template match="configuration">
+    <html>
+    <body>
+    <table border="1">
+    <tr>
+     <td>name</td>
+     <td>value</td>
+     <td>description</td>
+    </tr>
+    <xsl:for-each select="property">
+    <tr>
+      <td><a name="{name}"><xsl:value-of select="name"/></a></td>
+      <td><xsl:value-of select="value"/></td>
+      <td><xsl:value-of select="description"/></td>
+    </tr>
+    </xsl:for-each>
+    </table>
+    </body>
+    </html>
+    </xsl:template>
+    </xsl:stylesheet>
+
+  log4j.properties: |
+    # Copyright 2012 The Apache Software Foundation
+    #
+    # Licensed to the Apache Software Foundation (ASF) under one
+    # or more contributor license agreements.  See the NOTICE file
+    # distributed with this work for additional information
+    # regarding copyright ownership.  The ASF licenses this file
+    # to you under the Apache License, Version 2.0 (the
+    # "License"); you may not use this file except in compliance
+    # with the License.  You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+
+    # Define some default values that can be overridden by system properties
+    zookeeper.root.logger=INFO, CONSOLE
+
+    zookeeper.console.threshold=INFO
+
+    zookeeper.log.dir=.
+    zookeeper.log.file=zookeeper.log
+    zookeeper.log.threshold=INFO
+    zookeeper.log.maxfilesize=256MB
+    zookeeper.log.maxbackupindex=20
+
+    zookeeper.tracelog.dir=${zookeeper.log.dir}
+    zookeeper.tracelog.file=zookeeper_trace.log
+
+    log4j.rootLogger=${zookeeper.root.logger}
+
+    #
+    # console
+    # Add "console" to rootlogger above if you want to use this
+    #
+    log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+    log4j.appender.CONSOLE.Threshold=${zookeeper.console.threshold}
+    log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
+    log4j.appender.CONSOLE.layout.ConversionPattern=%d{ISO8601} [myid:%X{myid}] - %-5p [%t:%C{1}@%L] - %m%n
+
+    #
+    # Add ROLLINGFILE to rootLogger to get log file output
+    #
+    log4j.appender.ROLLINGFILE=org.apache.log4j.RollingFileAppender
+    log4j.appender.ROLLINGFILE.Threshold=${zookeeper.log.threshold}
+    log4j.appender.ROLLINGFILE.File=${zookeeper.log.dir}/${zookeeper.log.file}
+    log4j.appender.ROLLINGFILE.MaxFileSize=${zookeeper.log.maxfilesize}
+    log4j.appender.ROLLINGFILE.MaxBackupIndex=${zookeeper.log.maxbackupindex}
+    log4j.appender.ROLLINGFILE.layout=org.apache.log4j.PatternLayout
+    log4j.appender.ROLLINGFILE.layout.ConversionPattern=%d{ISO8601} [myid:%X{myid}] - %-5p [%t:%C{1}@%L] - %m%n
+
+    #
+    # Add TRACEFILE to rootLogger to get log file output
+    #    Log TRACE level and above messages to a log file
+    #
+    log4j.appender.TRACEFILE=org.apache.log4j.FileAppender
+    log4j.appender.TRACEFILE.Threshold=TRACE
+    log4j.appender.TRACEFILE.File=${zookeeper.tracelog.dir}/${zookeeper.tracelog.file}
+
+    log4j.appender.TRACEFILE.layout=org.apache.log4j.PatternLayout
+    ### Notice we are including log4j's NDC here (%x)
+    log4j.appender.TRACEFILE.layout.ConversionPattern=%d{ISO8601} [myid:%X{myid}] - %-5p [%t:%C{1}@%L][%x] - %m%n
+
+  pre-startup.sh: |
+    #!/usr/bin/env bash
+
+  post-startup.sh: |
+    #!/usr/bin/env bash

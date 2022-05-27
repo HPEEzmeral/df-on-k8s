@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: autoticket-generator-svc
+  namespace: hpe-system
+  labels:
+    app: autoticket-generator-app
+spec:
+  ports:
+    - port: 443
+      targetPort: 8443
+  selector:
+    app: autoticket-generator-app
