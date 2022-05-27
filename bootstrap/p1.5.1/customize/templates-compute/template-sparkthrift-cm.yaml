@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sparkthrift-cm
+  namespace: hpe-templates-compute
+data:
+  pre-startup.sh: |
+    #!/usr/bin/env bash
+
+  post-startup.sh: |
+    #!/usr/bin/env bash
+  spark-defaults.conf.extras: |
+    spark.kubernetes.driver.request.cores 2
+    spark.kubernetes.driver.limit.cores 2
+    spark.kubernetes.executor.request.cores 2
+    spark.kubernetes.executor.limit.cores 2

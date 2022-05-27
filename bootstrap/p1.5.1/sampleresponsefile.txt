@@ -1,0 +1,66 @@
+########################
+# BootstrapInstall sample prompt response file
+# syntax to use a prompt file:
+# ./bootstrap.sh install -m HEADLESS_MODE -r sampleresponsefile.txt
+#
+########################
+
+
+#############################
+# prompt: CREATE_COMPUTE
+# desc:  Install compute components
+# values - [yes, no]
+# default - yes
+#
+CREATE_COMPUTE=yes
+
+#############################
+# prompt: CREATE_STORAGE
+# desc:  Install the core MapR Cluster
+# values - [yes, no]
+# default - yes
+#
+CREATE_STORAGE=yes
+
+#############################
+# prompt: INSTALL_CSI
+# desc:  Install the MapR CSI plugin
+# values - [yes, no]
+# default - yes
+#
+INSTALL_CSI=yes
+
+#############################
+# prompt: LDAP_OPTION
+# desc: Authentication type choice for the MapR cluster to use
+#       Only used if CREATE_STORAGE is yes
+# values - [EXTERNAL, NONE, EXAMPLE]
+#     EXTERNAL means use an external LDAP
+#     NONE means use local raw linux users
+#     EXAMPLE means install the mapr-ldap openldap pod & service and use it
+# default - EXAMPLE
+#
+LDAP_OPTION=EXAMPLE
+
+#############################
+# prompt: USE_AIRGAP
+# desc:  Use an airgapped environment where the image registry is local (usually in an environment that does not
+#        have access to the internet)
+# values - [yes, no]
+# default - no
+#
+USE_AIRGAP=no
+
+#############################
+# prompt: AIRGAP_REGISTRY
+# desc:  The image registry to use
+#
+AIRGAP_REGISTRY=gcr.io/mapr-252711
+
+#############################
+# prompt: CONTINUE_INSTALL
+# desc:  final prompt to start the installation
+# values - [yes, no]
+# default - yes
+#
+CONTINUE_INSTALL=yes

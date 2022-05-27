@@ -1,0 +1,20 @@
+# Example tenant CR for cases without DataFabric.
+# Can be used to create a tenant if there is no Picasso neither external cluster configured
+# Such 'none DF' tenants can be used to run tenant services that are independent from DF, e.g. unencrypted spark history
+# server with 'PVC' storage type
+# 'None DF' tenants do not support DF-dependent services, e.g. tenantcli, spark-hs with 'maprfs' storage type.
+apiVersion: hcp.hpe.com/v1
+kind: Tenant
+metadata:
+  name: sampletenant
+spec:
+  clustertype: none # states that there is no DF for this tenant
+  clustername: "stub" # required field; not used if clustertype is 'none'
+  baseimagetag: "202204141412P151"
+  imageregistry: gcr.io/mapr-252711
+  debugging:
+    loglevel: INFO
+    preservefailedpods: true
+  security:
+    environmenttype: hcp
+    usesssd: true

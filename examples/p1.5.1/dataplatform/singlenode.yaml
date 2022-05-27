@@ -1,0 +1,21 @@
+apiVersion: hcp.hpe.com/v1
+kind: DataPlatform
+metadata:
+  name: dataplatform
+spec:
+  baseimagetag: "202204141412P151"
+  imageregistry: gcr.io/mapr-252711
+  environmenttype: hcp
+  simpledeploymentdisks:
+    - /dev/sdc
+    - /dev/sdd
+  disableha: true
+  core:
+    zookeeper:
+      failurecount: 0
+    cldb:
+      failurecount: 0
+    webserver:
+      count: 1
+    admincli:
+      count: 1

@@ -1,0 +1,308 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tenantcli-username
+  namespace: sampletenant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      hpe.com/component: tenantcli
+  template:
+    metadata:
+      labels:
+        hpe.com/component: tenantcli
+    spec:
+      volumes:
+        - name: cluster-cm
+          configMap:
+            name: cluster-cm
+            defaultMode: 420
+        - name: replace-cm
+          configMap:
+            name: cluster-cm
+            defaultMode: 420
+        - name: logs
+          hostPath:
+            path: /var/log/mapr/
+            type: DirectoryOrCreate
+        - name: cores
+          hostPath:
+            path: /var/log/mapr/cores
+            type: DirectoryOrCreate
+        - name: podinfo
+          hostPath:
+            path: /var/log/mapr/podinfo
+            type: DirectoryOrCreate
+        - name: ldap-cm
+          configMap:
+            name: ldapclient-cm
+            defaultMode: 420
+        - name: sssd-secrets
+          secret:
+            secretName: sssd
+            defaultMode: 420
+        - name: ssh-secrets
+          secret:
+            secretName: ssh
+            defaultMode: 420
+        - name: client-secrets
+          secret:
+            secretName: client
+            defaultMode: 420
+        - name: server-secrets
+          secret:
+            secretName: server
+            defaultMode: 420
+      containers:
+        - name: tenantcli
+          image: gcr.io/mapr-252711/tenantcli-6.2.0:202204141412P151
+          command:
+            - /tini
+            - '--'
+          args:
+            - /bin/bash
+            - '-c'
+            - /opt/mapr/kubernetes/start.sh
+          env:
+            - name: KUBERNETES_CONTAINER
+              value: 'true'
+            - name: LOG_LEVEL
+              value: INFO
+            - name: SECURE_CLUSTER
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: SECURE_CLUSTER
+            - name: USE_SSSD
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: USE_SSSD
+            - name: USE_SSH
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: USE_SSH
+            - name: MAPR_CLUSTER
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: MAPR_CLUSTER
+            - name: CLUSTER_NAMESPACE
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: CLUSTER_NAMESPACE
+            - name: MAPR_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: MAPR_VERSION
+            - name: DNS_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: DNS_DOMAIN
+            - name: MAPR_ZK_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: MAPR_ZK_HOSTS
+            - name: MAPR_CLDB_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: MAPR_CLDB_HOSTS
+            - name: MAPR_TSDB_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: MAPR_TSDB_HOSTS
+            - name: MAPR_ES_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: MAPR_ES_HOSTS
+            - name: MAPR_HIVEM_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: MAPR_HIVEM_HOSTS
+            - name: MAPR_TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: MAPR_TZ
+            - name: MAPR_HOME
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-cm
+                  key: MAPR_HOME
+            - name: MAPR_CPU
+              valueFrom:
+                resourceFieldRef:
+                  containerName: tenantcli
+                  resource: requests.cpu
+                  divisor: '0'
+            - name: MAPR_MEMORY
+              valueFrom:
+                resourceFieldRef:
+                  containerName: tenantcli
+                  resource: requests.memory
+                  divisor: 1Mi
+            - name: MAPR_CPU_LIMIT
+              valueFrom:
+                resourceFieldRef:
+                  containerName: tenantcli
+                  resource: limits.cpu
+                  divisor: '0'
+            - name: MAPR_MEMORY_LIMIT
+              valueFrom:
+                resourceFieldRef:
+                  containerName: tenantcli
+                  resource: limits.memory
+                  divisor: '0'
+            - name: MAPR_USER
+              valueFrom:
+                secretKeyRef:
+                  name: user
+                  key: MAPR_USER
+            - name: MAPR_GROUP
+              valueFrom:
+                secretKeyRef:
+                  name: user
+                  key: MAPR_GROUP
+            - name: MAPR_UID
+              valueFrom:
+                secretKeyRef:
+                  name: user
+                  key: MAPR_UID
+            - name: MAPR_GID
+              valueFrom:
+                secretKeyRef:
+                  name: user
+                  key: MAPR_GID
+            - name: MAPR_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: user
+                  key: MAPR_PASSWORD
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: POD_SERVICE_ACCOUNT
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.serviceAccountName
+          resources:
+            requests:
+              cpu: '2'
+              ephemeral-storage: 20Gi
+              memory: 8Gi
+          volumeMounts:
+            - name: logs
+              mountPath: /opt/mapr/logs
+            - name: logs
+              mountPath: /opt/mapr/mapr-cli-audit-log
+            - name: cores
+              mountPath: /opt/cores
+            - name: cluster-cm
+              mountPath: /opt/mapr/kubernetes/cluster-cm
+            - name: replace-cm
+              mountPath: /opt/mapr/kubernetes/replace-cm
+            - name: ldap-cm
+              mountPath: /opt/mapr/kubernetes/ldap-cm
+            - name: sssd-secrets
+              mountPath: /opt/mapr/kubernetes/sssd-secrets
+            - name: ssh-secrets
+              mountPath: /opt/mapr/kubernetes/ssh-secrets
+            - name: client-secrets
+              mountPath: /opt/mapr/kubernetes/client-secrets
+            - name: server-secrets
+              mountPath: /opt/mapr/kubernetes/server-secrets
+          livenessProbe:
+            exec:
+              command:
+                - /opt/mapr/kubernetes/isOk.sh
+            initialDelaySeconds: 600
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - /opt/mapr/kubernetes/isReady.sh
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              add:
+                - SYS_RESOURCE
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      serviceAccountName: hpe-sampletenant
+      serviceAccount: hpe-sampletenant
+      automountServiceAccountToken: true
+      securityContext: {}
+      imagePullSecrets:
+        - name: imagepull
+      subdomain: tenantcli-svc
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: hpe.com/usenode
+                    operator: Exists
+                  - key: hpe.com/exclusivecluster
+                    operator: In
+                    values:
+                      - none
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: hpe.com/compute
+                    operator: Exists
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: hpe.com/component
+                      operator: In
+                      values:
+                        - tenantcli
+                topologyKey: kubernetes.io/hostname
+      schedulerName: default-scheduler
+      tolerations:
+        - key: hpe.com/compute
+          operator: Exists
+      priorityClassName: hpe-tenant-service

@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-webhook
+  namespace: spark-operator
+spec:
+  ports:
+  - port: 443
+    targetPort: 8080
+    name: webhook
+  selector:
+    app.kubernetes.io/name: sparkoperator
+    app.kubernetes.io/version: v2.4.5-v1beta2

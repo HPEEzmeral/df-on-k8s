@@ -1,0 +1,13 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hpe-csi-attacher
+  namespace: hpe-csi
+subjects:
+  - kind: ServiceAccount
+    name: hpe-csi-controller
+    namespace: hpe-csi
+roleRef:
+  kind: ClusterRole
+  name: hpe-csi-attacher
+  apiGroup: rbac.authorization.k8s.io

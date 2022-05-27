@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ldapconfig-cm
+  namespace: hpe-ldap
+data:
+  KEEP_EXISTING_CONFIG: "false"
+  LDAP_BACKEND: mdb
+  LDAP_BASE_DN: dc=example,dc=com
+  LDAP_DOMAIN: example.com
+  LDAP_LOG_LEVEL: "256"
+  LDAP_ORGANISATION: example
+  LDAP_READONLY_USER: "true"
+  LDAP_READONLY_USER_USERNAME: readonly
+  LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
+  LDAP_REPLICATION_CONFIG_SYNCPROV: binddn="cn=admin,cn=config" bindmethod=simple
+    credentials=$LDAP_CONFIG_PASSWORD searchbase="cn=config" type=refreshAndPersist
+    retry="60 +" timeout=1 starttls=critical
+  LDAP_REPLICATION_DB_SYNCPROV: binddn="cn=admin,$LDAP_BASE_DN" bindmethod=simple
+    credentials=$LDAP_ADMIN_PASSWORD searchbase="$LDAP_BASE_DN" type=refreshAndPersist
+    interval=00:00:00:10 retry="60 +" timeout=1 starttls=critical
+  LDAP_REPLICATION_HOSTS: '#PYTHON2BASH:[''ldap://ldap-one-service'', ''ldap://ldap-two-service'']'
+  LDAP_RFC2307BIS_SCHEMA: "false"
+  LDAP_SSL_HELPER_PREFIX: ldap
+  LDAP_TLS: "true"
+  LDAP_TLS_CA_CRT_FILENAME: ca.crt
+  LDAP_TLS_CIPHER_SUITE: SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-RSA:-DHE-DSS:-CAMELLIA-128-CBC:-CAMELLIA-256-CBC
+  LDAP_TLS_CRT_FILENAME: ldap.crt
+  LDAP_TLS_ENFORCE: "false"
+  LDAP_TLS_KEY_FILENAME: ldap.key
+  LDAP_TLS_VERIFY_CLIENT: allow
+  HOSTNAME: ldap-svc.hpe-ldap.svc.cluster.local

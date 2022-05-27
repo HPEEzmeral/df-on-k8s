@@ -1,0 +1,9 @@
+apiVersion: hcp.hpe.com/v1
+kind: Tenant
+metadata:
+  name: sampletenant
+spec:
+  clustername: dataplatform
+  clustertype: internal
+  baseimagetag: "202204141412P151"
+  imageregistry: gcr.io/mapr-252711

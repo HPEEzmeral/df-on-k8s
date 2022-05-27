@@ -1,0 +1,246 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ldap
+  namespace: hpe-ldap
+  labels:
+    hpe.com/cluster: ldap
+    hpe.com/component: ldap
+    hpe.com/namespacetype: dataplatform
+    hpe.com/version: 6.3.0
+spec:
+  serviceName: ldap-svc
+  selector:
+    matchLabels:
+      hpe.com/component: ldap
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        hpe.com/cluster: ldap
+        hpe.com/component: ldap
+        hpe.com/namespace: dataplatform
+        hpe.com/version: 6.3.0
+    spec:
+      serviceAccount: hpe-ldap
+      imagePullSecrets:
+        - name: hpe-imagepull-secrets
+      containers:
+        - name: ldap
+          image: {operator-repo}/ldap-6.2.0:202202281231P150
+          imagePullPolicy: Always
+          command:
+            - /container/tool/run
+          env:
+            - name: LDAP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: LDAPADMIN_PASSWORD
+                  name: system-user-secrets
+            - name: LDAP_CONFIG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: LDAPADMIN_PASSWORD
+                  name: system-user-secrets
+            - name: LDAP_READONLY_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: LDAPBIND_PASSWORD
+                  name: system-user-secrets
+            - name: LDAP_ORGANISATION
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_ORGANISATION
+                  name: ldapconfig-cm
+            - name: HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: HOSTNAME
+                  name: ldapconfig-cm
+            - name: LDAP_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_DOMAIN
+                  name: ldapconfig-cm
+            - name: LDAP_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_LOG_LEVEL
+                  name: ldapconfig-cm
+            - name: LDAP_READONLY_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_READONLY_USER
+                  name: ldapconfig-cm
+            - name: LDAP_READONLY_USER_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_READONLY_USER_USERNAME
+                  name: ldapconfig-cm
+            - name: LDAP_RFC2307BIS_SCHEMA
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_RFC2307BIS_SCHEMA
+                  name: ldapconfig-cm
+            - name: LDAP_BACKEND
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_BACKEND
+                  name: ldapconfig-cm
+            - name: LDAP_TLS
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_TLS
+                  name: ldapconfig-cm
+            - name: LDAP_TLS_CRT_FILENAME
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_TLS_CRT_FILENAME
+                  name: ldapconfig-cm
+            - name: LDAP_TLS_KEY_FILENAME
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_TLS_KEY_FILENAME
+                  name: ldapconfig-cm
+            - name: LDAP_TLS_CA_CRT_FILENAME
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_TLS_CA_CRT_FILENAME
+                  name: ldapconfig-cm
+            - name: LDAP_TLS_ENFORCE
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_TLS_ENFORCE
+                  name: ldapconfig-cm
+            - name: LDAP_TLS_CIPHER_SUITE
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_TLS_CIPHER_SUITE
+                  name: ldapconfig-cm
+            - name: LDAP_TLS_VERIFY_CLIENT
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_TLS_VERIFY_CLIENT
+                  name: ldapconfig-cm
+            - name: LDAP_REPLICATION_CONFIG_SYNCPROV
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_REPLICATION_CONFIG_SYNCPROV
+                  name: ldapconfig-cm
+            - name: LDAP_REPLICATION_DB_SYNCPROV
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_REPLICATION_DB_SYNCPROV
+                  name: ldapconfig-cm
+            - name: LDAP_REPLICATION_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_REPLICATION_HOSTS
+                  name: ldapconfig-cm
+            - name: KEEP_EXISTING_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: KEEP_EXISTING_CONFIG
+                  name: ldapconfig-cm
+            - name: LDAP_REMOVE_CONFIG_AFTER_SETUP
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_REMOVE_CONFIG_AFTER_SETUP
+                  name: ldapconfig-cm
+            - name: LDAP_SSL_HELPER_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  key: LDAP_SSL_HELPER_PREFIX
+                  name: ldapconfig-cm
+          livenessProbe:
+            exec:
+              command:
+                - /opt/mapr/kubernetes/isOk.sh
+            failureThreshold: 3
+            initialDelaySeconds: 600
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 389
+              name: openldap
+              protocol: TCP
+            - containerPort: 636
+              name: openldaps
+              protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+                - /opt/mapr/kubernetes/isReady.sh
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "4"
+              ephemeral-storage: 40Gi
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              ephemeral-storage: 20Gi
+              memory: 2Gi
+          securityContext:
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - SYS_RESOURCE
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/run/ldapconfig
+              name: ldap-cm
+            - mountPath: /var/run/ldapsecret
+              name: ldap-secret
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - preference:
+                matchExpressions:
+                  - key: hpe.com/storage
+                    operator: Exists
+              weight: 50
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: hpe.com/usenode
+                    operator: Exists
+                  - key: hpe.com/exclusivecluster
+                    operator: In
+                    values:
+                      - none
+                      - ldap
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: hpe.com/component
+                      operator: In
+                      values:
+                        - ldap
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+      priorityClassName: hpe-critical
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      tolerations: {tolerate-master-node}
+        - key: hpe.com/storage-mycluster
+          operator: Exists
+      volumes:
+        - name: ldap-cm
+          configMap:
+            defaultMode: 420
+            name: ldapconfig-cm
+        - name: ldap-secret
+          secret:
+            defaultMode: 420
+            secretName: hpe-ldapseed-secret
+  updateStrategy:
+    type: RollingUpdate

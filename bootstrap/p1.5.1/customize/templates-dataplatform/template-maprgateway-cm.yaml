@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: maprgateway-cm
+  namespace: hpe-templates-data
+data:
+  gateway.conf: |
+    #
+    # Gateway Config file.
+    # Properties defined in this file are loaded during startup
+    # and are valid for only Gateway which loaded the config.
+    # These parameters are not persisted anywhere else.
+    #
+    # Gateway listening port
+    #gateway.port=7660
+    # Number of worker threads to receive replication stream requests
+    #gateway.receive.numthreads=128
+    # Number of flush threads to send put requests to replicas
+    #gateway.flush.numthreads=128
+    #
+    # Max limit on putbuffer memory in MB
+    #gateway.put.mem.mb=128
+    #
+    # Max limit on log file size
+    #gateway.logfile.size.mb=1024
+    #
+    #
+    # Gateway ES properties
+    #gateway.es.request.maxsize.kb=128
+    #gateway.es.cluster.maxClients=1
+
+  pre-startup.sh: |
+    #!/usr/bin/env bash
+
+  post-startup.sh: |
+    #!/usr/bin/env bash

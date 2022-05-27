@@ -1,0 +1,8 @@
+{
+  "substitutions": [
+    {
+      "old": "objectstore-2.0.0",
+      "new": "objectstore-2.2.0"
+    }
+  ]
+}
