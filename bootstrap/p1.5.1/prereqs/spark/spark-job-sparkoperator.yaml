@@ -20,6 +20,6 @@ spec:
       restartPolicy: Never
       containers:
       - name: main
-        image: {operator-repo}/spark-operator-2.4.7:202202281231P150
+        image: {operator-repo}/spark-operator-2.4.7:202204141412P151
         imagePullPolicy: IfNotPresent
         command: ["/usr/bin/gencerts.sh", "-p"]

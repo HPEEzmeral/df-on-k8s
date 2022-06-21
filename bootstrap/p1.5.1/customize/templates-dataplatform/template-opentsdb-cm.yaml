@@ -34,11 +34,11 @@ data:
     # ----------- HTTP -----------
     # The location of static files for the HTTP GUI interface.
     # *** REQUIRED ***
-    tsd.http.staticroot = /opt/mapr/opentsdb/opentsdb-2.4.0/share/opentsdb/static/
+    tsd.http.staticroot = /opt/mapr/opentsdb/opentsdb-2.4.1/share/opentsdb/static/
 
     # Where TSD should write it's cache files to
     # *** REQUIRED ***
-    tsd.http.cachedir = /opt/mapr/opentsdb/opentsdb-2.4.0/var/cache/opentsdb
+    tsd.http.cachedir = /opt/mapr/opentsdb/opentsdb-2.4.1/var/cache/opentsdb
 
     # --------- CORE ----------
     # Whether or not to automatically create UIDs for new metric types, default
@@ -52,7 +52,7 @@ data:
     tsd.core.meta.enable_tsuid_tracking = true
 
     # Full path to a directory containing plugins for OpenTSDB
-    tsd.core.plugin_path = /opt/mapr/opentsdb/opentsdb-2.4.0/share/opentsdb/plugins
+    tsd.core.plugin_path = /opt/mapr/opentsdb/opentsdb-2.4.1/share/opentsdb/plugins
 
     # --------- STORAGE ----------
     # Whether or not to enable data compaction in HBase, default is True

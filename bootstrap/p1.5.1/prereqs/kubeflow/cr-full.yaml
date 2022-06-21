@@ -120,7 +120,7 @@ spec:
       logLevel: INFO
     opentsdb:
       count: 1
-      image: opentsdb-2.4.0:202005280152-ST
+      image: opentsdb-2.4.1:202005280152-ST
       requestcpu: "2000m"
       limitcpu: "6000m"
       requestmemory: 16Gi
@@ -154,7 +154,7 @@ spec:
   coreservices:
     hivemetastore:
       count: 1
-      image: hivemeta-2.3:202005280152-ST
+      image: hivemeta-2.3.7:202005280152-ST
       requestcpu: "1000m"
       limitcpu: "4000m"
       requestmemory: 8Gi

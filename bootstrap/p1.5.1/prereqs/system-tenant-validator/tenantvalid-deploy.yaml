@@ -34,7 +34,7 @@ spec:
       containers:
       - name: tenant-validator
         imagePullPolicy: Always
-        image: {operator-repo}/tenantvalidator-1.0.0:202202281231P150
+        image: {operator-repo}/tenantvalidator-1.0.0:202204141412P151
         resources:
           requests:
             memory: 1Gi

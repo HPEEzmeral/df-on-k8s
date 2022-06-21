@@ -19,10 +19,10 @@ data:
 
     #Hostname    "localhost"
     #FQDNLookup   true
-    #BaseDir     "/opt/mapr/collectd/collectd-5.10.0/var/lib/collectd"
-    #PIDFile     "/opt/mapr/collectd/collectd-5.10.0/var/run/collectd.pid"
+    #BaseDir     "/opt/mapr/collectd/collectd-5.12.0/var/lib/collectd"
+    #PIDFile     "/opt/mapr/collectd/collectd-5.12.0/var/run/collectd.pid"
     #PluginDir   "${exec_prefix}/lib/collectd"
-    #TypesDB     "/opt/mapr/collectd/collectd-5.10.0/share/collectd/types.db"
+    #TypesDB     "/opt/mapr/collectd/collectd-5.12.0/share/collectd/types.db"
 
     #----------------------------------------------------------------------------#
     # When enabled, plugins are loaded automatically with the default options    #
@@ -79,14 +79,14 @@ data:
     <Plugin logfile>
       # err | warning | notice | info | debug (when CollectD is compiled with debug on)
       LogLevel err
-      File "/opt/mapr/collectd/collectd-5.10.0/var/log/collectd/collectd_daemon.log"
+      File "/opt/mapr/collectd/collectd-5.12.0/var/log/collectd/collectd_daemon.log"
       Timestamp true
       PrintSeverity true
     </Plugin>
 
     #<Plugin log_logstash>
     #	LogLevel info
-    #	File "/opt/mapr/collectd/collectd-5.10.0/var/log/collectd.json.log"
+    #	File "/opt/mapr/collectd/collectd-5.12.0/var/log/collectd.json.log"
     #</Plugin>
 
     #<Plugin syslog>
@@ -574,7 +574,7 @@ data:
     </Plugin>
     #
     #<Plugin csv>
-    #	DataDir "/opt/mapr/collectd/collectd-5.10.0/var/lib/collectd/csv"
+    #	DataDir "/opt/mapr/collectd/collectd-5.12.0/var/lib/collectd/csv"
     #	StoreRates false
     #</Plugin>
 
@@ -780,7 +780,7 @@ data:
     #</Plugin>
 
     #<Plugin email>
-    #	SocketFile "/opt/mapr/collectd/collectd-5.10.0/var/run/collectd-email"
+    #	SocketFile "/opt/mapr/collectd/collectd-5.12.0/var/run/collectd-email"
     #	SocketGroup "collectd"
     #	SocketPerms "0770"
     #	MaxConns 5
@@ -794,7 +794,7 @@ data:
     #</Plugin>
 
     #<Plugin exec>
-    #    Exec  "mapr:mapr"  "/opt/mapr/collectd/collectd-5.10.0/lib/collectd/exec-mfs-plugin.sh"
+    #    Exec  "mapr:mapr"  "/opt/mapr/collectd/collectd-5.12.0/lib/collectd/exec-mfs-plugin.sh"
     #</Plugin>
 
     #<Plugin fhcount>
@@ -945,7 +945,7 @@ data:
 
     ### **** MAPR_CONF_JMX_TAG: MAPR CONFIGURATION - DO NOT EDIT or REMOVE TAG/BLOCK ***
     #<Plugin java>
-    #	JVMArg "-Djava.class.path=/opt/mapr/collectd/collectd-5.10.0/share/collectd/java/collectd-api.jar:/opt/mapr/collectd/collectd-5.10.0/lib/fast-jmx-1.1.jar:/opt/mapr/lib/maprfs-6.2.0-mapr-SNAPSHOT.jar:/opt/mapr/lib/protobuf-java-3.11.1.jar:/opt/mapr/lib/slf4j-api-1.7.12.jar:/opt/mapr/lib/slf4j-log4j12-1.7.12.jar:/opt/mapr/lib/log4j-1.2.17.jar:/opt/mapr/lib/hadoop-auth-2.7.4.jar:/opt/mapr/lib/hadoop-common-2.7.4.jar:/opt/mapr/lib/json-1.8.jar:/opt/mapr/lib/commons-codec-1.5.jar:${JAVA_HOME}/lib/tools.jar"
+    #	JVMArg "-Djava.class.path=/opt/mapr/collectd/collectd-5.12.0/share/collectd/java/collectd-api.jar:/opt/mapr/collectd/collectd-5.12.0/lib/fast-jmx-1.1.jar:/opt/mapr/lib/maprfs-6.2.0-mapr-SNAPSHOT.jar:/opt/mapr/lib/protobuf-java-3.11.1.jar:/opt/mapr/lib/slf4j-api-1.7.12.jar:/opt/mapr/lib/slf4j-log4j12-1.7.12.jar:/opt/mapr/lib/log4j-1.2.17.jar:/opt/mapr/lib/hadoop-auth-2.7.4.jar:/opt/mapr/lib/hadoop-common-2.7.4.jar:/opt/mapr/lib/json-1.8.jar:/opt/mapr/lib/commons-codec-1.5.jar:${JAVA_HOME}/lib/tools.jar"
     #       JVMArg "-XX:+HeapDumpOnOutOfMemoryError"
     #       JVMArg "-XX:HeapDumpPath=/opt/mapr/heapdumps/collectd.heap_dump"
     #       JVMArg "-Xms32m"
@@ -4076,7 +4076,7 @@ data:
     #    Collect "cache-hits" "cache-misses"
     #    Socket "/var/run/pdns_recursor.controlsocket"
     #  </Recursor>
-    #  LocalSocket "/opt/mapr/collectd/collectd-5.10.0/var/run/collectd-powerdns"
+    #  LocalSocket "/opt/mapr/collectd/collectd-5.12.0/var/run/collectd-powerdns"
     #</Plugin>
 
     #<Plugin processes>
@@ -4109,7 +4109,7 @@ data:
     </Plugin>
 
     <Plugin mapr_volmetrics>
-           Log_Config_File "/opt/mapr/collectd/collectd-5.10.0/etc/log.conf"
+           Log_Config_File "/opt/mapr/collectd/collectd-5.12.0/etc/log.conf"
     </Plugin>
 
     #<Plugin protocols>
@@ -4119,27 +4119,27 @@ data:
 
     ### **** MAPR_CONF_PYTHON_MAPRMFS_TAG:
     #<Plugin python>
-    #    ModulePath "/opt/mapr/collectd/collectd-5.10.0/lib/mapr_plugins"
+    #    ModulePath "/opt/mapr/collectd/collectd-5.12.0/lib/mapr_plugins"
     #    LogTraces true
     #    Interactive false
     #    Import "maprmfs"
     #    <Module maprmfs>
-    #        #debug_file "/opt/mapr/collectd/collectd-5.10.0/var/log/collectd/collectd_mfs_debug.log"
+    #        #debug_file "/opt/mapr/collectd/collectd-5.12.0/var/log/collectd/collectd_mfs_debug.log"
     #        #debug_file_level "warning"
     #        spyglass "/opt/mapr/bin/spyglass"
-    #        ignored_datasets_file "/opt/mapr/collectd/collectd-5.10.0/lib/mapr_plugins/maprmfs_ignored_datasets.txt"
+    #        ignored_datasets_file "/opt/mapr/collectd/collectd-5.12.0/lib/mapr_plugins/maprmfs_ignored_datasets.txt"
     #    </Module>
     #</Plugin>
     ### **** MAPR_CONF_PYTHON_MAPRMFS_TAG_END:
 
     ### **** MAPR_CONF_PYTHON_MAPRK8SINFO_TAG:
     #<Plugin python>
-    #    ModulePath "/opt/mapr/collectd/collectd-5.10.0/lib/mapr_plugins"
+    #    ModulePath "/opt/mapr/collectd/collectd-5.12.0/lib/mapr_plugins"
     #    LogTraces true
     #    Interactive false
     #    Import "maprk8sinfo"
     #    <Module maprk8sinfo>
-    #        #debug_file "/opt/mapr/collectd/collectd-5.10.0/var/log/collectd/collectd_k8sinfo_debug.log"
+    #        #debug_file "/opt/mapr/collectd/collectd-5.12.0/var/log/collectd/collectd_k8sinfo_debug.log"
     #        #debug_file_level "warning"
     #    </Module>
     #</Plugin>
@@ -4188,14 +4188,14 @@ data:
 
     #<Plugin rrdcached>
     #	DaemonAddress "unix:/tmp/rrdcached.sock"
-    #	DataDir "/opt/mapr/collectd/collectd-5.10.0/var/lib/collectd/rrd"
+    #	DataDir "/opt/mapr/collectd/collectd-5.12.0/var/lib/collectd/rrd"
     #	CreateFiles true
     #	CreateFilesAsync false
     #	CollectStatistics true
     #</Plugin>
 
     #<Plugin rrdtool>
-    #	DataDir "/opt/mapr/collectd/collectd-5.10.0/var/lib/collectd/rrd"
+    #	DataDir "/opt/mapr/collectd/collectd-5.12.0/var/lib/collectd/rrd"
     #	CreateFilesAsync false
     #	CacheTimeout 120
     #	CacheFlush   900
@@ -4203,7 +4203,7 @@ data:
     #</Plugin>
 
     #<Plugin sensors>
-    #	SensorConfigFile "/opt/mapr/collectd/collectd-5.10.0/etc/sensors.conf"
+    #	SensorConfigFile "/opt/mapr/collectd/collectd-5.12.0/etc/sensors.conf"
     #	Sensor "it8712-isa-0290/temperature-temp1"
     #	Sensor "it8712-isa-0290/fanspeed-fan3"
     #	Sensor "it8712-isa-0290/voltage-in8"
@@ -4473,7 +4473,7 @@ data:
     #</Plugin>
 
     #<Plugin unixsock>
-    #	SocketFile "/opt/mapr/collectd/collectd-5.10.0/var/run/collectd-unixsock"
+    #	SocketFile "/opt/mapr/collectd/collectd-5.12.0/var/run/collectd-unixsock"
     #	SocketGroup "collectd"
     #	SocketPerms "0660"
     #	DeleteSocket false
@@ -4841,7 +4841,7 @@ data:
 
       <!-- Rolling appenders -->
       <appender name="createstreams" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="/opt/mapr/collectd/collectd-5.10.0/var/log/collectd/createstreams.log"/>
+        <param name="file" value="/opt/mapr/collectd/collectd-5.12.0/var/log/collectd/createstreams.log"/>
         <param name="MaxFileSize" value="100KB"/>
         <param name="MaxBackupIndex" value="10"/>
         <!-- It's one by default. -->
