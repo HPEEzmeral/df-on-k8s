@@ -34,7 +34,7 @@ spec:
       containers:
       - name: dataplatformoperator
         imagePullPolicy: Always
-        image: {operator-repo}/clusteroperator-1.0.0:202202281231P150
+        image: {operator-repo}/clusteroperator-1.0.0:202204141412P151
         resources:
           requests:
             memory: 1Gi
