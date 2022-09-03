@@ -3,6 +3,34 @@
     {
       "old": "objectstore-2.0.0",
       "new": "objectstore-2.2.0"
+    },
+    {
+      "old": "hivemeta-2.3",
+      "new": "hivemeta-2.3.7"
+    },
+    {
+      "old": "dataaccessgateway-3.0",
+      "new": "dataaccessgateway-4.0.0"
+    },
+    {
+      "old": "httpfs-1.0",
+      "new": "httpfs-1.1.0"
+    },
+    {
+      "old": "kafkarest-5.1.2",
+      "new": "kafkarest-6.0.0"
+    },
+    {
+      "old": "collectd-5.10.0",
+      "new": "collectd-5.12.0"
+    },
+    {
+      "old": "grafana-6.7.4",
+      "new": "grafana-7.5.10"
+    },
+    {
+      "old": "opentsdb-2.4.0",
+      "new": "opentsdb-2.4.1"
     }
   ]
 }
