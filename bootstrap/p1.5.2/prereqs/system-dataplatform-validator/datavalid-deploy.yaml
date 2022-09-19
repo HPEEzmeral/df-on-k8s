@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataplatform-validator
+  namespace: hpe-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dataplatform-validator-app
+  template:
+    metadata:
+      labels:
+        app: dataplatform-validator-app
+    spec:
+      serviceAccountName: hpe-dataplatform-validator
+      automountServiceAccountToken: true
+      priorityClassName: hpe-critical
+      tolerations: {tolerate-master-node}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - tenantoperator
+              topologyKey: "kubernetes.io/hostname"
+      imagePullSecrets:
+        - name: hpe-imagepull-secrets
+      containers:
+      - name: dataplatform-validator
+        imagePullPolicy: Always
+        image: {operator-repo}/dataplatformvalidator-1.0.0:202209072129P152
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 500m
+        env:
+          - name : LOG_LEVEL
+            value: "info"
+        volumeMounts:
+          - name: dataplatform-validator-certs
+            mountPath:  /opt/validator/certs
+            readOnly: true
+          - name: nodevalidator-logs
+            mountPath: /opt/mapr/logs
+      volumes:
+        - name: dataplatform-validator-certs
+          secret:
+            secretName: dataplatform-validator-certs
+        - hostPath:
+            path: /var/log/nodevalidator
+            type: DirectoryOrCreate
+          name: nodevalidator-logs

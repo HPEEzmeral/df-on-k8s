@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafkarest-cm
+  namespace: hpe-templates-data
+data:
+  example.conf: |
+    # example content
+
+  pre-startup.sh: |
+    #!/usr/bin/env bash
+
+  post-startup.sh: |
+    #!/usr/bin/env bash

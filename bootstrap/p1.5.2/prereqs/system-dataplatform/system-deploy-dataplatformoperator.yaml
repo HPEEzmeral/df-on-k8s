@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataplatformoperator
+  namespace: hpe-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dataplatformoperator
+  template:
+    metadata:
+      labels:
+        app: dataplatformoperator
+    spec:
+      serviceAccountName: hpe-dataplatformoperator
+      automountServiceAccountToken: true
+      priorityClassName: hpe-critical
+      tolerations: {tolerate-master-node}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - dataplatformoperator
+              topologyKey: "kubernetes.io/hostname"
+      imagePullSecrets:
+        - name: hpe-imagepull-secrets
+      containers:
+      - name: dataplatformoperator
+        imagePullPolicy: Always
+        image: {operator-repo}/clusteroperator-1.0.0:202209072129P152
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 500m
+        args:
+        - --zap-devel
+        - --zap-encoder console
+        env:
+        - name : WATCH_NAMESPACE
+          value: ""
+        - name: POD_NAME
+          valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+        - name: DYN_DISK_DIR
+          value: "/var/mapr/edf-disks"
+        - name : OPERATOR_NAME
+          value: "storage-operator"
+        - name : K8S_TYPE
+          value: "vanilla"
+        - name : LOG_LEVEL
+          value: "info"
+        - name: EDF_ITERATION
+          value: "1"
+        - name: EDF_VERSION
+          value: {edf-version}

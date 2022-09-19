@@ -1,0 +1,13 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hpe-csi-attacher-nfs
+  namespace: hpe-nfscsi
+subjects:
+  - kind: ServiceAccount
+    name: hpe-csi-controller-nfs
+    namespace: hpe-nfscsi
+roleRef:
+  kind: ClusterRole
+  name: hpe-csi-attacher-nfs
+  apiGroup: rbac.authorization.k8s.io
