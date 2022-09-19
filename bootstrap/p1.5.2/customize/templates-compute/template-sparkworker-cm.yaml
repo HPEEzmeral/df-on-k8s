@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sparkworker-cm
+  namespace: hpe-templates-compute
+data:
+  pre-startup.sh: |
+    #!/usr/bin/env bash
+
+  post-startup.sh: |
+    #!/usr/bin/env bash
+    
+  example.conf: |
+    # put conf files here

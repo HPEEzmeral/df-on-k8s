@@ -1,0 +1,80 @@
+# shared bootstrap images
+ldap-6.2.0:202209072129P152
+nodeservices-6.2.0:202209072129P152
+
+# csi images
+csi-attacher:v3.3.0 # csi repo: k8s.gcr.io/sig-storage
+csi-provisioner:v3.0.0 # csi repo: k8s.gcr.io/sig-storage
+csi-snapshotter:v4.2.1 # csi repo: k8s.gcr.io/sig-storage
+snapshot-controller:v4.2.1 # csi repo: k8s.gcr.io/sig-storage
+livenessprobe:v2.4.0 # csi repo: k8s.gcr.io/sig-storage
+csi-resizer:v1.3.0 # csi repo: k8s.gcr.io/sig-storage
+csi-node-driver-registrar:v2.3.0 # csi repo: k8s.gcr.io/sig-storage
+csi-kdfprovisioner:1.2.4 # mapr docker repo: docker.io/maprtech
+csi-kdfplugin:1.2.6 # mapr docker repo: docker.io/maprtech
+csi-nfsplugin:1.0.6 # mapr docker repo: docker.io/maprtech
+
+# datafabric bootstrap images
+clusteroperator-1.0.0:202209072129P152
+dataplatformvalidator-1.0.0:202209072129P152
+tenantvalidator-1.0.0:202209072129P152
+autoticketgen-1.0.0:202209072129P152
+
+# compute bootstrap images
+tenantoperator-1.0.0:202209072129P152
+spark-operator-2.4.7:202209072129P152
+kubeflow-operator:v1.1.0-latest
+local-path-provisioner:v0.0.13 # rancher repo: rancher
+
+# base images
+base-6.2.0:202209072129P152
+clientbase-6.2.0:202209072129P152
+init-6.2.0:202209072129P152
+
+# shared cluster/tenant service imagesx
+hivemeta-2.3.9:202209072129P152
+
+# data fabric images
+## core
+cldb-6.2.0:202209072129P152
+mfs-6.2.0:202209072129P152
+zookeeper-6.2.0:202209072129P152
+webserver-6.2.0:202209072129P152
+admincli-6.2.0:202209072129P152
+
+## gateways
+objectstore-2.2.0:202209072129P152
+busybox #docker repo: hub.docker.com/_/busybox
+httpfs-1.1.0:202209072129P152
+maprgateway-6.2.0:202209072129P152
+kafkarest-6.0.0:202209072129P152
+dataaccessgateway-4.0.0:202209072129P152
+
+## monitoring
+collectd-5.12.0:202209072129P152
+elasticsearch-6.8.8:202209072129P152
+fluent-1.10.3:202209072129P152
+grafana-7.5.10:202209072129P152
+kibana-6.8.8:202209072129P152
+opentsdb-2.4.1:202209072129P152
+
+## kmip client
+hsmsetup-6.2.0:202209072129P152
+
+# compute images
+## client
+tenantcli-6.2.0:202209072129P152
+
+## spark
+spark-2.4.7:202209072129P152
+spark-base-2.4.7:202209072129P152
+spark-hs-2.4.7:202209072129P152
+spark-ts-2.4.7:202209072129P152
+spark-client-2.4.7:202201271752C
+spark-py-2.4.7:202209072129P152
+spark-r-2.4.7:202209072129P152
+livy-0.5.0:202207071036R
+sparkctl-2.4.7:202209072129P152
+
+# kubeflow images
+Need to add! # kubeflow repo: gcr.io/kubeflow-images-public/kubernetes-sigs
