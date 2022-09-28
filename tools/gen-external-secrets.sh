@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# gen-external-secrets for core 6.1, 6.2, 7.0
+# gen-external-secrets for core 6.1, 6.2, 7.0, 7.1
 
 ECHOE="echo -e"
 
@@ -13,6 +13,7 @@ ERROR=1
 
 MAPR_HOME=${MAPR_HOME:-"/opt/mapr"}
 CONFDIR="$MAPR_HOME/conf"
+CA_CONFDIR=$CONFDIR/"ca"
 PROMPT_SILENT=$NO
 SECURE_CLUSTER="false"
 CLUSTER_NAME="my.cluster.com"
@@ -38,7 +39,11 @@ SSLSERVERXML_FILE=$CONFDIR/"ssl-server.xml"
 SSLCLIENTXML_FILE=$CONFDIR/"ssl-client.xml"
 KEYCREDS_FILE=$CONFDIR/"maprkeycreds.jceks"
 TRUSTCREDS_FILE=$CONFDIR/"maprtrustcreds.jceks"
-KEYSTOREPASS="mapr123"
+PUBLIC_CRT_FILE=$CONFDIR/"public.crt"
+PRIVATE_KEY_FILE=$CONFDIR/"private.key"
+CHAIN_CA_CERT_PEM_FILE=$CA_CONFDIR/"chain-ca.pem"
+ROOT_CA_CERT_PEM_FILE=$CA_CONFDIR/"root-ca.pem"
+SIGNING_CA_CERT_PEM_FILE=$CA_CONFDIR/"signing-ca.pem"
 
 # Output an error, warning or regular message
 msg() {
@@ -238,6 +243,27 @@ create_secure_secret() {
   if [ -f $SSLSERVERXML_FILE ]; then
     SSL_SERVER_XML=`cat $SSLSERVERXML_FILE | base64 -w 0`
   fi
+  # Check if public.crt exists
+  if [ -f $PUBLIC_CRT_FILE ]; then
+    PUBLIC_CRT=`cat $PUBLIC_CRT_FILE | base64 -w 0`
+  fi
+  # Check if private.key exists
+  if [ -f $PRIVATE_KEY_FILE ]; then
+    PRIVATE_KEY=`cat $PRIVATE_KEY_FILE | base64 -w 0`
+  fi
+  # Check if chain-ca.pem exists
+  if [ -f $CHAIN_CA_CERT_PEM_FILE ]; then
+    CHAIN_CA_CERT_PEM=`cat $CHAIN_CA_CERT_PEM_FILE | base64 -w 0`
+  fi
+  # Check if root-ca.pem exists
+  if [ -f $ROOT_CA_CERT_PEM_FILE ]; then
+    ROOT_CA_CERT_PEM=`cat $ROOT_CA_CERT_PEM_FILE | base64 -w 0`
+  fi
+  # Check if signing-ca.pem exists
+  if [ -f $SIGNING_CA_CERT_PEM_FILE ]; then
+    SIGNING_CA_CERT_PEM=`cat $SIGNING_CA_CERT_PEM_FILE | base64 -w 0`
+  fi
+
   SECURE_SERVER_SECRETS_FILE_HEADER=$(cat <<EOF
 
 ---
@@ -273,6 +299,8 @@ data:
     $SSL_SERVER_XML
   maprkeycreds.jceks: >-
     $KEYSTORE_CREDS
+  private.key: >-
+    $PRIVATE_KEY
 EOF
 )
   else
@@ -308,6 +336,14 @@ data:
     $SSL_CLIENT_XML
   maprtrustcreds.jceks: >-
     $TRUSTSTORE_CREDS
+  public.crt: >-
+    $PUBLIC_CRT
+  root-ca.pem: >-
+    $ROOT_CA_CERT_PEM
+  signing-ca.pem: >-
+    $SIGNING_CA_CERT_PEM
+  chain-ca.pem: >-
+    $CHAIN_CA_CERT_PEM
 EOF
 )
   else
