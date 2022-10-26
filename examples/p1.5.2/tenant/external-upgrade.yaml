@@ -1,0 +1,30 @@
+apiVersion: hcp.hpe.com/v1
+kind: Tenant
+metadata:
+  name: tenant-1
+spec:
+  baseimagetag:  "202209072129P152"
+  clustername:   dataplatform
+  clustertype:   external
+  corelocation:  /var/lib/docker/mapr/cores
+  #We can use this command to fetch the AD/LDAP configs from old tenant that needs to be upgraded
+  #kubectl get tenant <TENANT NAME> -o jsonpath='{.spec.grouplist}'
+  #The output is as follows:
+  #["hpecp-tenant-7-member","hpecp-tenant-7-admin"]
+  grouplist:
+    - hpecp-tenant-7-member
+    - hpecp-tenant-7-admin
+  imageregistry:    gcr.io/mapr-252711
+  loglocation:      /var/lib/docker/mapr/logs
+  podinfolocation:  /var/lib/docker/mapr/podinfo
+  security:
+    environmenttype:            hcp
+    externalclientsecret:       dataplatform-client-secrets
+    externalconfigmap:          dataplatform-external-cm
+    externalhivesiteconfigmap:  dataplatform-hivesite-cm
+    externalserversecret:       dataplatform-server-secrets
+    externalusersecret:         dataplatform-user-secrets
+    usesssd:                    true
+  tenantservices:
+    tenantcli:
+      count:  1
