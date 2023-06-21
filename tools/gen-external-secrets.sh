@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# gen-external-secrets for core 6.1, 6.2, 7.0, 7.1, 7.2
+# gen-external-secrets for core 6.1, 6.2, 7.0, 7.1, 7.2, 7.3, 7.4
 
 ECHOE="echo -e"
 
